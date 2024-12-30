@@ -1,3 +1,5 @@
+@props(['event'])
+
 <!-- ======= Footer ======= -->
 <footer id="footer">
     <div class="footer-top">
@@ -56,15 +58,19 @@
                 </div>
 
                 <div class="col-lg-4 col-md-6 footer-newsletter" data-aos="fade-up" data-aos-delay="200">
-                    <h4>Intern</h4>
-                    <ul>
-                        @if(Auth::check())
-                            <li><a href="{{ route('frontend.logout') }}"><i class="bx bx-log-out"></i> {{ __('main.Log Out') }}</a></li>
-                        @else
-                            <li><a href="{{ route('login') }}"><i class="bx bx-log-in"></i> {{ __('main.Log In') }}</a></li>
-                            <li><a href="/register"><i class="bx bx-log-in"></i> {{ __('main.Register') }}</a></li>
+                    @if($event)
+                        @if($event->datumvona >= \Carbon\Carbon::now() && $event->datumbisa <= \Carbon\Carbon::now())
+                            <h4>Intern</h4>
+                            <ul>
+                            @if(Auth::check())
+                                <li><a href="{{ route('frontend.logout') }}"><i class="bx bx-log-out"></i> {{ __('main.Log Out') }}</a></li>
+                            @else
+                                <li><a href="{{ route('login') }}"><i class="bx bx-log-in"></i> {{ __('main.Log In') }}</a></li>
+                                <li><a href="/register"><i class="bx bx-log-in"></i> {{ __('main.Register') }}</a></li>
+                            @endif
+                            </ul>
                         @endif
-                    </ul>
+                    @endif
                 </div>
             </div>
         </div>

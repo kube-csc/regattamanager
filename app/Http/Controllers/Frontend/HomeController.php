@@ -54,12 +54,11 @@ class HomeController extends Controller
             ->orderby('position')
             ->get();
 
-       return view('pages.frontend.home' , compact('event', 'raceTypes', 'eventDokumentes', 'regattaInformations'));
+       return view('pages.frontend.home' , compact(   'raceTypes', 'eventDokumentes', 'regattaInformations'));
     }
 
     public function imprint()
     {
         return view('home.imprint');
     }
-
 }

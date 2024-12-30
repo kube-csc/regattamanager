@@ -1,3 +1,5 @@
+@props(['event'])
+
 <!-- ======= Header ======= -->
 <header id="header" class="fixed-top header-transparent">
     <div class="container d-flex align-items-center">
@@ -11,12 +13,17 @@
         <nav class="nav-menu d-none d-lg-block">
             <ul>
                 <li class="active"><a href="/">Home</a></li>
-                @if(Auth::check())
-                    <li><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
-                    <li><a href="{{ route('frontend.logout') }}">{{ __('main.Log Out') }}</a></li>
-                @else
-                    <li><a href="/login">{{ __('main.Log In') }}</a></li>
-                    <li><a href="/register">{{ __('main.Register') }}</a></li>
+                <li><a href="#about">Informationen</a></li>
+                @if($event)
+                    @if($event->datumvona >= \Carbon\Carbon::now() && $event->datumbisa <= \Carbon\Carbon::now())
+                      @if(Auth::check())
+                        <li><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
+                        <li><a href="{{ route('frontend.logout') }}">{{ __('main.Log Out') }}</a></li>
+                      @else
+                        <li><a href="/login">{{ __('main.Log In') }}</a></li>
+                        <li><a href="/register">{{ __('main.Register') }}</a></li>
+                      @endif
+                    @endif
                 @endif
             </ul>
         </nav><!-- .nav-menu -->

@@ -44,11 +44,11 @@
 
 <body>
 
-<x-frontend.header></x-frontend.header>
+<x-frontend.header :event="$event"></x-frontend.header>
 
   {{ $slot }}
 
-<x-frontend.Footer></x-frontend.Footer>
+<x-frontend.Footer :event="$event"></x-frontend.Footer>
 
 <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 

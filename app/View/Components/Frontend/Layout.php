@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Frontend;
 
+use App\Models\Event;
 use Illuminate\View\Component;
 
 class Layout extends Component
@@ -23,6 +24,14 @@ class Layout extends Component
      */
     public function render()
     {
-            return view('layouts.frontend');
+        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
+
+        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
+            $query->where('domain', $currentDomain);
+        })
+            ->orderBy('datumvon', 'desc')
+            ->first();
+
+            return view('layouts.frontend' , compact('event'));
     }
 }

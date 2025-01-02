@@ -22,6 +22,12 @@ class HomeController extends Controller
             ->orderBy('datumvon', 'desc')
             ->first();
 
+        if(!$event) {
+            $event = new \stdClass();
+            $event->ueberschrift = "Keine Veranstaltung gefunden";
+            return view('pages.frontend.noEvent' , compact('event'));
+        }
+
        $raceTypes = RaceType::where('regatta_id', $event->id)->get();
 
        $temp=0;
@@ -40,8 +46,8 @@ class HomeController extends Controller
             ->orderby('position')
             ->get();
 
-        $temp=0;
-        $regattaInformations = RegattaInformation::where('event_id' , $event->id)
+       $temp=0;
+       $regattaInformations = RegattaInformation::where('event_id' , $event->id)
             ->where(function ($query) use ($temp) {
                 $query->where('startDatumVerschoben' , "<=" , Carbon::now())
                     ->orwhere('startDatumAktiv' , 0);

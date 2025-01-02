@@ -59,20 +59,24 @@
                               </p>
                             @endif
                         </div>
-                        <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="200">
-                            <h4>Klassen</h4>
-                            <ul>
-                              @foreach($raceTypes as $raceType)
-                               <li>{{ $raceType->typ }} {{ $raceType->distanz }}<br>
-                                  {{ $raceType->beschreibung }}
-                               </li>
-                              @endforeach
-                            </ul>
-                        </div>
-
                         @php
-                            $delay=200;
+                            $delay=100;
                         @endphp
+                        @if($raceTypes)
+                            @php
+                                $delay=$delay+100;
+                            @endphp
+                            <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="{{$delay}}">
+                                <h4>Klassen</h4>
+                                <ul>
+                                  @foreach($raceTypes as $raceType)
+                                   <li>{{ $raceType->typ }} {{ $raceType->distanz }}<br>
+                                      {{ $raceType->beschreibung }}
+                                   </li>
+                                  @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
                         @if($eventDokumentes->count()>0)
                             @php

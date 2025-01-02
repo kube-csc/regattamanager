@@ -1,4 +1,4 @@
-@section('title' ,'Terminplan Kurse')
+@section('title' ,$event->ueberschrift)
 
 <x-frontend.layout>
 

@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventGroup extends Model
 {
-    protected $connection = 'mysql2';
+   //
 }

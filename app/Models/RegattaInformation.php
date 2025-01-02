@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class RegattaInformation extends Model
 {
-    protected $connection = 'mysql2';
+    //
 }

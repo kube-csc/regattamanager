@@ -29,6 +29,8 @@
     <!-- Template Main CSS File -->
     <link href="/assets/css/style.css" rel="stylesheet">
 
+    @include('layouts.header')
+
     <!-- =======================================================
     * Template Name: Squadfree - v2.2.0
     * Template URL: https://bootstrapmade.com/squadfree-free-bootstrap-template-creative/

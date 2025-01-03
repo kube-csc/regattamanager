@@ -44,14 +44,12 @@
                                 {{ str_replace('_', ' ', env('VEREIN_STRASSE')) }}<br>
                                 {{ str_replace('_', ' ', env('VEREIN_PLZ')) }} {{ str_replace('_', ' ', env('VEREIN_ORT')) }}
                             </p>
-                            <p>
                             @if($event->telefon)
-                             <p>
+                              <p>
                                 <i class="icofont-telephone"></i>
                                 <a href="tel:{{ $event->telefon }}">{{ $event->telefon }}</a>
-                             </p>
+                              </p>
                             @endif
-                            </p>
                             @if($event->email)
                               <p>
                                 <i class="icofont-email"></i>
@@ -62,7 +60,7 @@
                         @php
                             $delay=100;
                         @endphp
-                        @if($raceTypes)
+                        @if(!$raceTypes)
                             @php
                                 $delay=$delay+100;
                             @endphp

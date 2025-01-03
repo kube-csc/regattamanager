@@ -15,6 +15,7 @@ class HomeController extends Controller
     public function index()
     {
         $currentDomain = parse_url(url('/'), PHP_URL_HOST);
+        $currentDomain = str_replace('www.', '', $currentDomain);
 
         $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
             $query->where('domain', $currentDomain);

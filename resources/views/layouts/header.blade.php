@@ -1,7 +1,8 @@
 <!-- Template Main CSS File abgeändert bei verschiedene Ausgaben -->
 @php
-    $serverdomain   = parse_url(url('/'), PHP_URL_HOST);
-    $abteilungStyl  = DB::table('event_groups')->where('domain' , $serverdomain)->first();
+    $abteilungStyl = parse_url(url('/'), PHP_URL_HOST);
+    $abteilungStyl = str_replace('www.', '', $abteilungStyl);
+    $abteilungStyl = DB::table('event_groups')->where('domain' , $abteilungStyl)->first();
 @endphp
 
 <style>

@@ -7,7 +7,7 @@
         @endphp
         <h1>{{ $Verein }}</h1>
         <h2>{{ $SLogen }}</h2>
-        <a href="#services" style="color: white;">Termine</a>
-        <a href="#services" class="btn-get-started scrollto"><i class="bx bx-chevrons-down"></i></a>
+        <a href="#about" style="color: white;">Event</a>
+        <a href="#about" class="btn-get-started scrollto"><i class="bx bx-chevrons-down"></i></a>
     </div>
 </section><!-- End Hero -->

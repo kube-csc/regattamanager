@@ -13,7 +13,9 @@
         <nav class="nav-menu d-none d-lg-block">
             <ul>
                 <li class="active"><a href="/">Home</a></li>
-                <li><a href="#about">Informationen</a></li>
+                <li><a href="/#about">Informationen</a></li>
+                {{--
+                ToDo: Implementierung der Registrierung von Accounts
                 @if($event)
                     @if($event->datumvona >= \Carbon\Carbon::now() && $event->datumbisa <= \Carbon\Carbon::now())
                       @if(Auth::check())
@@ -25,6 +27,7 @@
                       @endif
                     @endif
                 @endif
+                --}}
             </ul>
         </nav><!-- .nav-menu -->
 

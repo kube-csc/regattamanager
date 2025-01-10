@@ -9,7 +9,9 @@
                     <p>
                         {!! $event->anmeldetext !!}
                     </p>
-                    <a href="" class="about-btn">mehr Informationen <i class="bx bx-chevron-right"></i></a>
+                @if($event->datumvona && $event->datumbis)
+                    <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
+                @endif
                 </div>
             </div>
             <div class="col-xl-7 d-flex align-items-stretch">
@@ -60,7 +62,7 @@
                         @php
                             $delay=100;
                         @endphp
-                        @if(!$raceTypes)
+                        @if($raceTypes->count()>0)
                             @php
                                 $delay=$delay+100;
                             @endphp

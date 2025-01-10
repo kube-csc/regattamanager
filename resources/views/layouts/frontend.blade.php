@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title> @yield( 'title' , env('APP_NAME')) </title>
+    <title>@yield( 'title' , env('APP_NAME')) </title>
     @php
         // ToDo: Meta Conten bearbeiten
         $description = str_replace('_', ' ', env('VEREIN_KEYWORDS'));

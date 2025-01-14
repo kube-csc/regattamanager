@@ -14,6 +14,7 @@
             <ul>
                 <li class="active"><a href="/">Home</a></li>
                 <li><a href="/#about">Informationen</a></li>
+                <li><a href="/Anfahrt">Anfahrt</a></li>
                 {{--
                 ToDo: Implementierung der Registrierung von Accounts
                 @if($event)

@@ -7,12 +7,10 @@ use App\Http\Controllers\Frontend\DatenschutzerklaerungController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/',                         [HomeController::class, 'index'])->name('pages.frontend.home');
-//Route::get('/Impressum', 'App\Http\Controllers\frontend\ImpressumController@getImpressumDaten');
-//Route::get('/Information/Datenschutzerklaerung', 'App\Http\Controllers\frontend\DatenschutzerklärungController@getDatenschutzerklärungDaten');
+Route::get('/',                                  [HomeController::class, 'index'])->name('pages.frontend.home');
 Route::get('/Impressum',                         [ImpressumController::class, 'getImpressumDaten']);
 Route::get('/Information/Datenschutzerklaerung', [DatenschutzerklaerungController::class, 'getDatenschutzerklaerungDaten']);
-
+Route::get('/Anfahrt',                           [HomeController::class, 'journey']);
 
 Route::get('/Meldung',              [RegattaTeamController::class, 'create'])->name('RegattaTeam.create');
 Route::post('/Meldung/eintragen',   [RegattaTeamController::class, 'store'])->name('RegattaTeam.store');

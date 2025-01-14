@@ -1,10 +1,10 @@
-@section('title' ,'Datenschutzerklärung')
+@section('title' ,'Datenschutzerklaerung')
 
 <x-frontend.layout>
 
     <main id="main">
       <div style="text-align: justify">
-        @include('components.frontend.datenschtzerklärung');
+        @include('components.frontend.datenschtzerklaerung');
       </div>
     </main><!-- End #main -->
 

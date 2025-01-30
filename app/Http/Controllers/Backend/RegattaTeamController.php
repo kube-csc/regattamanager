@@ -66,6 +66,10 @@ class RegattaTeamController extends Controller
                 $request->mailen='n';
             }
 
+            if ($request->einverstaendnis === null) {
+                $request->einverstaendnis=0;
+            }
+
             $regattaTeam = RegattaTeam::create([
                 'regatta_id' => $request->regatta_id,
                 'gruppe_id' => $request->gruppe_id,
@@ -88,6 +92,7 @@ class RegattaTeamController extends Controller
                 'teamlink' => 0, //ToDo Teamlink ermitteln
                 'passwort' => Str::random(10), //ToDo Passwort ermitteln
                 'status' => 'Neuanmeldung'
+                'einverstaendnis' => $request->einverstaendnis;
             ]);
 
             $event = Event::find($request->regatta_id);

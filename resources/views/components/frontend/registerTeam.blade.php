@@ -104,10 +104,6 @@
             <textarea name="kommentar" id="kommentar" class="form-control"></textarea>
         </div>
         <div class="form-group">
-            <label for="mailen">Möchten sie über weiter Events Informiert werden</label>
-            <input type="checkbox" name="mailen" id="mailen" class="form-control">
-        </div>
-        <div class="form-group">
             <label for="werbung">Wie haben Sie von uns erfahren:</label>
             <select name="werbung" id="werbung" class="form-control" size="1" width="10">
                 <option value="0" selected>nicht ausgewählt</option>
@@ -126,9 +122,38 @@
                 <option value="11">Sonstiges</option>
             </select>
         </div>
+
+        @if($event->einverstaendnis != '')
+            <div class="form-group">
+                <label for="einverstaendnis">Teilnahmebedingungen:</label>
+                <p>
+                    {!! $event->einverstaendnis !!}
+                </p>
+                <p class="form-check">
+                    <input type="checkbox" name="einverstaendnis" id="einverstaendnis" class="form-check-input" {{ old('einverstaendnis') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="mailen">
+                       Ich habe die Teilnahmebedingungen gelesen und erkläre mich damit einverstanden. Dies geschieht mit einem Haken im Kontrollfeld.
+                    </label>
+                </p>
+                @if($errors->has('einverstaendnis'))
+                    <div class="alert alert-danger small" role="alert">{{ $errors->first('einverstaendnis') }}</div>
+                @endif
+            </div>
+        @endif
+
+        <div class="form-group">
+            <label for="mailen">Möchten sie über weiter Events Informiert werden:</label>
+            <div class="form-check">
+                <input type="checkbox" name="mailen" id="mailen" class="form-check-input" {{ old('mailen') ? 'checked' : '' }}>
+                <label class="form-check-label" for="mailen">
+                    Ja, ich möchte informiert werden.
+                </label>
+            </div>
+        </div>
+
         <div class="form-group">
             <label for="captcha">Was ist {{ $num1 }} + {{ $num2 }}?</label>
-            <input type="text" name="captcha" id="captcha" class="form-control" required>
+            <input type="text" name="captcha" id="captcha" class="form-control" value="{{ old('captcha') }}" required>
             <input type="hidden" name="num1" value="{{ $num1 }}">
             <input type="hidden" name="num2" value="{{ $num2 }}">
         </div>

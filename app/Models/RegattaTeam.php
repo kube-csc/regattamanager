@@ -32,6 +32,7 @@ class RegattaTeam extends Model
         'mailen',
         'mailendatum',
         'werbung',
+        'einverstaendnis'
     ];
 
 }

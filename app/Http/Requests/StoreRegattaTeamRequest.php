@@ -39,7 +39,7 @@ class StoreRegattaTeamRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'einverstaendnis.accepted' => 'Sie müssen den Teilnahmebedingungen zustimmen.',
+            'einverstaendnis.accepted' => 'Sie müssen den Teilnahmebedingungen / Einverständniserklärung zustimmen.',
         ];
     }
 }

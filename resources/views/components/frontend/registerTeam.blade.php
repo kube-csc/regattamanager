@@ -85,6 +85,7 @@
                 @endforeach
             </select>
         </div>
+{{--        ToDo: Bilder noch einbauen--}}
 {{--        <div class="form-group">--}}
 {{--            <label for="bild">Teamfoto</label>--}}
 {{--            <input type="file" name="bild" id="bild" class="form-control">--}}
@@ -100,7 +101,7 @@
             <textarea name="beschreibung" id="beschreibung" class="form-control"></textarea>
         </div>
         <div class="form-group">
-            <label for="kommentar">Bemerkung für den Veranstalter:</label>
+            <label for="kommentar">Information an den Veranstalter:</label>
             <textarea name="kommentar" id="kommentar" class="form-control"></textarea>
         </div>
         <div class="form-group">
@@ -109,7 +110,7 @@
                 <option value="0" selected>nicht ausgewählt</option>
                 <option value="1">kel-datteln.de Homepage</option>
                 <option value="2">Day of Dragons Homepage</option>
-{{--                <option value="3">Kanucup-Datteln Homepage</option>--}}
+                <option value="3">Kanucup-Datteln Homepage</option>
                 <option value="4">Plakatwerbung</option>
                 <option value="5">Flyer</option>
                 <option value="6">Empfehlung von Sportfreunden</option>
@@ -125,14 +126,14 @@
 
         @if($event->einverstaendnis != '')
             <div class="form-group">
-                <label for="einverstaendnis">Teilnahmebedingungen:</label>
+                <label for="einverstaendnis">Teilnahmebedingungen / Einverständniserklärung:</label>
                 <p>
                     {!! $event->einverstaendnis !!}
                 </p>
                 <p class="form-check">
                     <input type="checkbox" name="einverstaendnis" id="einverstaendnis" class="form-check-input" {{ old('einverstaendnis') ? 'checked' : '' }}>
-                    <label class="form-check-label" for="mailen">
-                       Ich habe die Teilnahmebedingungen gelesen und erkläre mich damit einverstanden. Dies geschieht mit einem Haken im Kontrollfeld.
+                    <label class="form-check-label" for="einverstaendnis">
+                       Ich habe die Teilnahmebedingungen / Einverständniserklärung gelesen und erkläre mich damit einverstanden. Dies geschieht mit einem Haken im Kontrollfeld.
                     </label>
                 </p>
                 @if($errors->has('einverstaendnis'))
@@ -153,12 +154,12 @@
 
         <div class="form-group">
             <label for="captcha">Was ist {{ $num1 }} + {{ $num2 }}?</label>
-            <input type="text" name="captcha" id="captcha" class="form-control" value="{{ old('captcha') }}" required>
+            <input type="text" name="captcha" id="captcha" class="form-control" required>
             <input type="hidden" name="num1" value="{{ $num1 }}">
             <input type="hidden" name="num2" value="{{ $num2 }}">
         </div>
 
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">Melden</button>
         <br><br>
     </form>
 </div>

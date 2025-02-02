@@ -66,7 +66,10 @@ class RegattaTeamController extends Controller
                 $request->mailen='n';
             }
 
-            if ($request->einverstaendnis === null) {
+            if($request->einverstaendnis){
+                $request->einverstaendnis=1;
+            }
+            else{
                 $request->einverstaendnis=0;
             }
 
@@ -89,18 +92,23 @@ class RegattaTeamController extends Controller
                 'datum' => now(),
                 'werbung' => $request->werbung,
                 'training' => $raceType->training,
-                'teamlink' => 0, //ToDo Teamlink ermitteln
-                'passwort' => Str::random(10), //ToDo Passwort ermitteln
-                'status' => 'Neuanmeldung'
-                'einverstaendnis' => $request->einverstaendnis;
+                'teamlink' => 0, //ToDo: Teamlink ermitteln
+                'passwort' => Str::random(10), //ToDo: Passwort ermitteln
+                'status' => 'Neuanmeldung',
+                'mannschaftsmail' => 'M',
+                'einverstaendnis' => $request->einverstaendnis
             ]);
 
-            $event = Event::find($request->regatta_id);
+            $event   = Event::find($request->regatta_id);
             $wertung = RaceType::find($request->gruppe_id);
 
+            // Erstelle eine Instanz des TeamMailController
+            $teamMailController = new TeamMailController();
+            // Rufe die TeamMeldungMail Methode auf
+            $teamMailController->TeamMeldungMail();
+
             return view('pages.frontend.notificationTeam', compact('event', 'regattaTeam', 'wertung'))
-                ->with('success', 'Ihr Team wurde erfolgreich gemeldet.');
-            //return redirect()->route('pages.frontend.home')->with('success', 'Erfolgreich gemeldet.');
+                ->with('success', 'Ihr Team '. $request->teamname . ' wurde erfolgreich gemeldet.');
     }
 
     /**

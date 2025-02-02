@@ -1,4 +1,4 @@
-@section('title' ,$event->ueberschrift)
+@section('title' ,$event->ueberschrift.' - Meldung')
 
 <x-frontend.layout>
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\TeamMailController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Backend\RegattaTeamController;
 use App\Http\Controllers\Frontend\ImpressumController;
@@ -11,6 +12,8 @@ Route::get('/',                                  [HomeController::class, 'index'
 Route::get('/Impressum',                         [ImpressumController::class, 'getImpressumDaten']);
 Route::get('/Information/Datenschutzerklaerung', [DatenschutzerklaerungController::class, 'getDatenschutzerklaerungDaten']);
 Route::get('/Anfahrt',                           [HomeController::class, 'journey']);
+
+Route::get('/Teamemailmeldebestaetigung', [TeamMailController::class, 'TeamMeldungMail'])->name('RegattaTeam.TeamMeldungMail');
 
 Route::get('/Meldung',              [RegattaTeamController::class, 'create'])->name('RegattaTeam.create');
 Route::post('/Meldung/eintragen',   [RegattaTeamController::class, 'store'])->name('RegattaTeam.store');

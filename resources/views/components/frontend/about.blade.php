@@ -7,11 +7,11 @@
                 <div class="content">
                     <h2>{{ $event->ueberschrift }}</h2>
                     <p>
-                        {!! $event->anmeldetext !!}
+                        {!! $event->beschreibung !!}
                     </p>
-                @if($event->datumvona && $event->datumbis)
+                 @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
                     <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
-                @endif
+                  @endif
                 </div>
             </div>
             <div class="col-xl-7 d-flex align-items-stretch">
@@ -114,9 +114,9 @@
                                                 @endif
                                                 @endif
                                                 @if( $eventDokumente->bild != NULL)
-                                                    <li><a href="{{env('VEREIN_URL')}}/storage/eventDokumente/{{ $eventDokumente->bild }}" target="_blank">{{ $eventDokumente->titel }}</a></li>
+                                                    <li><a href="{{env('VEREIN_CANONICAL')}}/storage/eventDokumente/{{ $eventDokumente->bild }}" target="_blank">{{ $eventDokumente->titel }}</a></li>
                                                 @else
-                                                    <li><a href="{{env('VEREIN_URL')}}/daten/text/{{ $eventDokumente->image }}" target="_blank">{{ $eventDokumente->titel }}</a></li>
+                                                    <li><a href="{{env('VEREIN_CANONICAL')}}/daten/text/{{ $eventDokumente->image }}" target="_blank">{{ $eventDokumente->titel }}</a></li>
                                                 @endif
                                                 @endforeach
                                             </ul>

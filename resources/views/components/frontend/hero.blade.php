@@ -2,7 +2,7 @@
 <section id="hero">
     <div class="hero-container" data-aos="fade-up">
         @php
-            $Verein = str_replace('_', ' ', env('VEREIN_NAME'));
+            $Verein = str_replace('_', ' ', env('APP_NAME'));
             $SLogen = str_replace('_', ' ', env('VEREIN_SLOGEN'));
         @endphp
         <h1>{{ $Verein }}</h1>

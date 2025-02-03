@@ -65,14 +65,15 @@
         </div>
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" name="email" id="email" class="form-control {{ $errors->has('email') ? 'alert-warning' : '' }}" value="{{ old('email') }}">
+            <input type="email" name="email"id="email" class="form-control {{ $errors->has('email') ? 'alert-warning' : '' }}" value="{{ old('email') }}">
             @if($errors->has('email'))
                 <div class="alert alert-danger small" role="alert">{{ $errors->first('email') }}</div>
             @endif
         </div>
         <div class="form-group">
             <label for="homepage">Homepage:</label>
-            <input type="url" name="homepage" id="homepage" class="form-control {{ $errors->has('homepage') ? 'alert-warning' : '' }}" value="{{ old('homepage') }}">
+            <input type="text" name="homepage" id="homepage" class="form-control {{ $errors->has('homepage') ? 'alert-warning' : '' }}" value="{{ old('homepage') }}"
+                   placeholder="http://... oder https://..."  title="Bitte gebe eine gültige URL ein, die mit http:// oder https:// beginnt.">
             @if($errors->has('homepage'))
                 <div class="alert alert-danger small" role="alert">{{ $errors->first('homepage') }}</div>
             @endif

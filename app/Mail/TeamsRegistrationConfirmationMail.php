@@ -39,33 +39,36 @@ use Illuminate\Queue\SerializesModels;
      */
     public function content(): Content
     {
-//        return new Content(
-//            view: 'view.name',
-//        );
         $raceType = RaceType::find($this->regattateam->gruppe_id);
         $mailtext = "";
         $mailtext = $mailtext . '<h2>Ihre Anmeldedaten:</h2>';
         $mailtext = $mailtext . '<ul>';
-        $mailtext = $mailtext . '<li>Teamname: '.$this->regattateam->teamname.'</li>';
-        $mailtext = $mailtext . '<li>Verein: '.$this->regattateam->verein.'</li>';
-        $mailtext = $mailtext . '<li>Teamcaptain: '.$this->regattateam->teamcaptain.'</li>';
-        $mailtext = $mailtext . '<li>Strasse: '.$this->regattateam->strasse.'</li>';
-        $mailtext = $mailtext . '<li>PLZ: '.$this->regattateam->plz.'</li>';
-        $mailtext = $mailtext . '<li>Ort: '.$this->regattateam->ort.'</li>';
-        $mailtext = $mailtext . '<li>Telefon: '.$this->regattateam->telefon.'</li>';
-        $mailtext = $mailtext . '<li>Email: '.$this->regattateam->email.'</li>';
-        $mailtext = $mailtext . '<li>Homepage: '.$this->regattateam->homepage.'</li>';
-        $mailtext = $mailtext . '<li>Wertung: '.$raceType->typ.'</li><br>';
-        $mailtext = $mailtext . '<li>Beschreibung des Teams: '.$this->regattateam->beschreibung.'</li><br>';
-        $mailtext = $mailtext . '<li>Information an den Veranstalter: '.$this->regattateam->kommentar.'</li>';
-        $mailtext = $mailtext . '</ul><br>';
-        $mailtext = $mailtext . $this->event->einverstaendnis.'<br><br>';
+        $mailtext = $mailtext . '<li>Teamname: ' . $this->regattateam->teamname . '</li>';
+        $mailtext = $mailtext . '<li>Verein: ' . $this->regattateam->verein . '</li>';
+        $mailtext = $mailtext . '<li>Teamcaptain: ' . $this->regattateam->teamcaptain . '</li>';
+        $mailtext = $mailtext . '<li>Strasse: ' . $this->regattateam->strasse . '</li>';
+        $mailtext = $mailtext . '<li>PLZ: ' . $this->regattateam->plz . '</li>';
+        $mailtext = $mailtext . '<li>Ort: ' . $this->regattateam->ort . '</li>';
+        $mailtext = $mailtext . '<li>Telefon: ' . $this->regattateam->telefon . '</li>';
+        $mailtext = $mailtext . '<li>Email: ' . $this->regattateam->email . '</li>';
+        $mailtext = $mailtext . '<li>Homepage: ' . $this->regattateam->homepage . '</li>';
+        $mailtext = $mailtext . '<li>Wertung: ' . $raceType->typ . '</li>';
+        $mailtext = $mailtext . '<li>Beschreibung des Teams: ' . $this->regattateam->beschreibung . '</li>';
+        $mailtext = $mailtext . '<li>Information an den Veranstalter: ' . $this->regattateam->kommentar . '</li>';
+        $mailtext = $mailtext . '</ul>';
 
-        if ($this->regattateam->einverstaendnis == 1) {
-                $mailtext = $mailtext . "Sie haben den Teilnahmebedingungen / Einverständniserklärung zugestimmt.<br><br>";
+        if($this->event->anmeldetext <> '') {
+            $mailtext = $mailtext . $this->event->anmeldetext . '<br>';
         }
-        else {
+
+        if ($this->event->einverstaendnis <> ''){
+            $mailtext = $mailtext . $this->event->einverstaendnis . '<br>';
+
+            if ($this->regattateam->einverstaendnis == 1) {
+                $mailtext = $mailtext . "Sie haben den Teilnahmebedingungen / Einverständniserklärung zugestimmt.<br><br>";
+            } else {
                 $mailtext = $mailtext . "Sie haben den Teilnahmebedingungen / Einverständniserklärung nicht zugestimmt.<br><br>";
+            }
         }
 
         if($this->regattateam->mailen == 'a') {

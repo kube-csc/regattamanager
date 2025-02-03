@@ -14,8 +14,7 @@ Button Text
 </x-mail::button>
 -->
 
-
-{{ config('app.name') }}<br>
+{{ env('APP_URL') }}<br>
 {{ env('VEREIN_NAME') }}
 @include('textimport.mailImpressum')
 

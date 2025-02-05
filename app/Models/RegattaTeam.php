@@ -35,4 +35,9 @@ class RegattaTeam extends Model
         'einverstaendnis'
     ];
 
+    public function getRaceType()
+    {
+        return $this->belongsTo(RaceType::class, 'gruppe_id');
+    }
+
 }

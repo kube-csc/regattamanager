@@ -33,13 +33,15 @@ class StoreRegattaTeamRequest extends FormRequest
             'homepage' => 'nullable|string|max:255',
             'captcha' => 'required|integer',
             'einverstaendnis' => 'accepted',
-        ];
+            'gruppe_id' => 'min:1|integer',
+       ];
     }
 
     public function messages(): array
     {
         return [
-            'einverstaendnis.accepted' => 'Sie müssen den Teilnahmebedingungen / Einverständniserklärung zustimmen.',
-        ];
+            'einverstaendnis.accepted' => 'Du must den Teilnahmebedingungen / Einverständniserklärung zustimmen.',
+            'gruppe_id.min' => 'Bitte wähle eine Wertung / Klasse.',
+       ];
     }
 }

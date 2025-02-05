@@ -65,17 +65,17 @@ use Illuminate\Queue\SerializesModels;
             $mailtext = $mailtext . $this->event->einverstaendnis . '<br>';
 
             if ($this->regattateam->einverstaendnis == 1) {
-                $mailtext = $mailtext . "Sie haben den Teilnahmebedingungen / Einverständniserklärung zugestimmt.<br><br>";
+                $mailtext = $mailtext . "Du hast den Teilnahmebedingungen / Einverständniserklärung zugestimmt.<br><br>";
             } else {
-                $mailtext = $mailtext . "Sie haben den Teilnahmebedingungen / Einverständniserklärung nicht zugestimmt.<br><br>";
+                $mailtext = $mailtext . "Du hast den Teilnahmebedingungen / Einverständniserklärung nicht zugestimmt.<br><br>";
             }
         }
 
         if($this->regattateam->mailen == 'a') {
-                $mailtext = $mailtext . "Sie haben zugestimmt, dass wir Ihnen Informationen zu weiteren Events per Email zusenden dürfen.<br>";
+                $mailtext = $mailtext . "Du hast zugestimmt, dass wir Ihnen Informationen zu weiteren Events per Email zusenden dürfen.<br>";
         }
         else {
-                $mailtext = $mailtext . "Sie haben nicht zugestimmt, dass wir Ihnen Informationen zu weiteren Events per Email zusenden dürfen.<br>";
+                $mailtext = $mailtext . "Du hast nicht zugestimmt, dass wir Ihnen Informationen zu weiteren Events per Email zusenden dürfen.<br>";
         }
 
         return new Content(

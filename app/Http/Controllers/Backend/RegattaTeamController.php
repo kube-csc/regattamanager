@@ -17,7 +17,16 @@ class RegattaTeamController extends Controller
      */
     public function index()
     {
-        //
+        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
+        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
+            $query->where('domain', $currentDomain);
+        })
+            ->orderBy('datumvon', 'desc')
+            ->first();
+
+        $regattaTeams = RegattaTeam::where('regatta_id', $event->id)->get();
+
+        return view('pages.frontend.regattaTeams', compact('event','regattaTeams'));
     }
 
     /**
@@ -73,6 +82,8 @@ class RegattaTeamController extends Controller
                 $request->einverstaendnis=0;
             }
 
+            $request->session()->put('meldung_done', true);
+
             $regattaTeam = RegattaTeam::create([
                 'regatta_id' => $request->regatta_id,
                 'gruppe_id' => $request->gruppe_id,
@@ -107,16 +118,26 @@ class RegattaTeamController extends Controller
             // Rufe die TeamMeldungMail Methode auf
             $teamMailController->TeamMeldungMail();
 
-            return view('pages.frontend.notificationTeam', compact('event', 'regattaTeam', 'wertung'))
-                ->with('success', 'Ihr Team '. $request->teamname . ' wurde erfolgreich gemeldet.');
+            return redirect('/Meldung/Bestaetigung/'.$regattaTeam->id)
+                ->with('success', 'Ihr Team '. $regattaTeam->teamname . ' wurde erfolgreich gemeldet.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(RegattaTeam $regattaTeam)
+    public function show(RegattaTeam $regattaTeam, $raceTeam_id)
     {
-        //
+        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
+        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
+            $query->where('domain', $currentDomain);
+        })
+            ->orderBy('datumvon', 'desc')
+            ->first();
+
+        $regattaTeam = RegattaTeam::find($raceTeam_id);
+
+        return view('pages.frontend.notificationTeam', compact('event', 'regattaTeam'))
+              ->with('success', 'Ihr Team '. $regattaTeam->teamname . ' wurde erfolgreich gemeldet.');
     }
 
     /**

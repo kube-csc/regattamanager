@@ -17,30 +17,32 @@
         <li>Telefon: {{ $regattaTeam->telefon }}</li>
         <li>Email: {{ $regattaTeam->email }}</li>
         <li>Homepage: {{ $regattaTeam->homepage }}</li>
-        <li>Werbung: {{ $wertung->typ }}</li>
-        <br>
-        <li>Team Beschreibung: {{ $regattaTeam->beschreibung }}</li>
-        <br>
-        <li>Information an den Veranstalter: {!! $regattaTeam->kommentar !!}</li>
+        <li>Werbung: {{ $regattaTeam->getRaceType->typ }}</li>
     </ul>
+    <p>Team Beschreibung:<br>
+        {{ $regattaTeam->beschreibung }}
+    </p>
+    <p>Information an den Veranstalter:<br>
+        {!! $regattaTeam->kommentar !!}
+    </p>
 
     @if($regattaTeam->mailen == 'a')
         <p>
-            Über zukünftige Events werden Sie per Email informiert.
+            Über zukünftige Events möchtest du per E-Mail informiert werden.
         </p>
     @endif
 
     @if($regattaTeam->einverstaendnis == 1)
         <p>
-            Sie haben den Teilnahmebedingungen / Einverständniserklärung zugestimmt.
+            Du hast den Teilnahmebedingungen / Einverständniserklärung zugestimmt.
         </p>
     @else
         <p>
-            Sie haben den Teilnahmebedingungen / Einverständniserklärung nicht zugestimmt.
+            Du hast den Teilnahmebedingungen / Einverständniserklärung nicht zugestimmt.
         </p>
     @endif
 
-    <h3>Möchten Sie eine weitere Team melden?</h3>
+    <b>Möchtest du eine weiteres Team melden?</b><br>
     <a href="{{ route('RegattaTeam.create') }}" class="btn btn-primary">Weiteres Team melden</a><br>
     <br>
 </div>

@@ -15,9 +15,11 @@ Route::get('/Anfahrt',                           [HomeController::class, 'journe
 
 Route::get('/Teamemailmeldebestaetigung', [TeamMailController::class, 'TeamMeldungMail'])->name('RegattaTeam.TeamMeldungMail');
 
-Route::get('/Meldung',              [RegattaTeamController::class, 'create'])->name('RegattaTeam.create');
-Route::post('/Meldung/eintragen',   [RegattaTeamController::class, 'store'])->name('RegattaTeam.store');
-Route::get('/Meldung/Bestaetigung', [RegattaTeamController::class, 'notificationTeam'])->name('RegattaTeam.notificationTeam');
+Route::get('/Regattateams',                       [RegattaTeamController::class, 'index'])->name('RegattaTeam.index');
+Route::get('/Meldung',                            [RegattaTeamController::class, 'create'])->name('RegattaTeam.create');
+Route::post('/Meldung/eintragen',                 [RegattaTeamController::class, 'store'])->name('RegattaTeam.store');
+Route::get('/Meldung/Bestaetigung/{raceTeam_id}', [RegattaTeamController::class, 'show'])->name('RegattaTeam.show')
+    ->middleware('check.meldung.session');
 
 Route::middleware([
     'auth:sanctum',

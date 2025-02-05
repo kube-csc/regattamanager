@@ -16,6 +16,7 @@
                 <li><a href="/#about">Informationen</a></li>
                 @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
                 <li><a href="/Meldung">Melden</a></li>
+                <li><a href="/Regattateams">Gemeldete Teams</a></li>
                 @endif
                 <li><a href="/Anfahrt">Anfahrt</a></li>
                 {{--

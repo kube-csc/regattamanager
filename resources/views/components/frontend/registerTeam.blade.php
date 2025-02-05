@@ -13,8 +13,7 @@
     <form action="{{ route('RegattaTeam.store') }}" method="POST">
         @csrf
         <input type="hidden" name="regatta_id" id="regatta_id" class="form-control" value="{{$event->id}}">
-
-        <div class="form-group">
+         <div class="form-group">
             <label for="teamname">Teamname:</label>
             <input type="text" name="teamname" id="teamname" class="form-control {{ $errors->has('teamname') ? 'alert-warning' : '' }}" value="{{ old('teamname') }}">
             @if($errors->has('teamname'))
@@ -22,17 +21,17 @@
             @endif
         </div>
         <div class="form-group">
-            <label for="verein">Verein:</label>
-            <input type="text" name="verein" id="verein" class="form-control {{ $errors->has('verein') ? 'alert-warning' : '' }}" value="{{ old('verein') }}">
-            @if($errors->has('verein'))
-                <div class="alert alert-danger small" role="alert">{{ $errors->first('verein') }}</div>
-            @endif
-        </div>
-        <div class="form-group">
-            <label for="teamcaptain">Teamcaptain:</label>
+            <label for="teamcaptain">Teamcaptain / Teamkapitänin:</label>
             <input type="text" name="teamcaptain" id="teamcaptain" class="form-control {{ $errors->has('teamcaptain') ? 'alert-warning' : '' }}" value="{{ old('teamcaptain') }}">
             @if($errors->has('teamcaptain'))
                 <div class="alert alert-danger small" role="alert">{{ $errors->first('teamcaptain') }}</div>
+            @endif
+        </div>
+        <div class="form-group">
+            <label for="verein">Verein / Firma / Institution:</label>
+            <input type="text" name="verein" id="verein" class="form-control {{ $errors->has('verein') ? 'alert-warning' : '' }}" value="{{ old('verein') }}">
+            @if($errors->has('verein'))
+                <div class="alert alert-danger small" role="alert">{{ $errors->first('verein') }}</div>
             @endif
         </div>
         <div class="form-group">
@@ -73,18 +72,22 @@
         <div class="form-group">
             <label for="homepage">Homepage:</label>
             <input type="text" name="homepage" id="homepage" class="form-control {{ $errors->has('homepage') ? 'alert-warning' : '' }}" value="{{ old('homepage') }}"
-                   placeholder="http://... oder https://..."  title="Bitte gebe eine gültige URL ein, die mit http:// oder https:// beginnt.">
+                   placeholder="http://... oder https://..." title="Bitte gebe eine gültige URL ein, die mit http:// oder https:// beginnt.">
             @if($errors->has('homepage'))
                 <div class="alert alert-danger small" role="alert">{{ $errors->first('homepage') }}</div>
             @endif
         </div>
         <div class="form-group">
-            <label for="gruppe_id">Wertung:</label>
+            <label for="gruppe_id">Wertung / Klasse:</label>
             <select name="gruppe_id" id="gruppe_id" class="form-control" required>
+                <option value="0">Wertung / Klasse wählen</option>
                 @foreach($raceTypes as $raceType)
-                    <option value="{{ $raceType->id }}">{{ $raceType->typ }}</option>
+                    <option value="{{ $raceType->id }}" {{ old('gruppe_id') == $raceType->id ? 'selected' : '' }}>{{ $raceType->typ }}</option>
                 @endforeach
             </select>
+            @if($errors->has('gruppe_id'))
+                <div class="alert alert-danger small" role="alert">{{ $errors->first('gruppe_id') }}</div>
+            @endif
         </div>
 {{--        ToDo: Bilder noch einbauen--}}
 {{--        <div class="form-group">--}}

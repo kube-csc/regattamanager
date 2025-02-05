@@ -15,7 +15,11 @@ Button Text
 -->
 
 {{ env('APP_URL') }}<br>
-{{ env('VEREIN_NAME') }}
+{{ env('VEREIN_NAME') }}<br>
+{{ env('VEREIN_STRASSE') }}<br>
+{{ env('VEREIN_PLZ') }} {{ env('VEREIN_ORT') }}<br>
+{{ env('VEREIN_TELEFON') }}<br>
+{{ env('VEREIN_EMAIL') }}<br>
 @include('textimport.mailImpressum')
 
 </x-mail::message>

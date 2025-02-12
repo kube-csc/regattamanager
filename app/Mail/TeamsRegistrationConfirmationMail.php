@@ -57,8 +57,8 @@ use Illuminate\Queue\SerializesModels;
         $mailtext = $mailtext . '<li>Information an den Veranstalter: ' . $this->regattateam->kommentar . '</li>';
         $mailtext = $mailtext . '</ul>';
 
-        if($this->event->anmeldetext <> '') {
-            $mailtext = $mailtext . $this->event->anmeldetext . '<br>';
+        if($this->event->emailAntwort <> '') {
+            $mailtext = $mailtext . $this->event->emailAntwort . '<br>';
         }
 
         if ($this->event->einverstaendnis <> ''){

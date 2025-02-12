@@ -7,9 +7,16 @@
                 <div class="content">
                     <h2>{{ $event->ueberschrift }}</h2>
                     <p>
-                        {!! $event->beschreibung !!}
+                       @if($event->anmeldetext)
+                         {!! $event->anmeldetext !!}
+                       @else
+                         {!! $event->beschreibung !!}
+                       @endif
                     </p>
-                 @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
+                  @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
+                    @if($event->anmeldetext)
+                        <a href="/Meldeinformation" class="about-btn">Ausschreibung<i class="bx bx-chevron-right"></i></a>
+                    @endif
                     <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
                   @endif
                 </div>

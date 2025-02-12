@@ -12,6 +12,7 @@ Route::get('/',                                  [HomeController::class, 'index'
 Route::get('/Impressum',                         [ImpressumController::class, 'getImpressumDaten']);
 Route::get('/Information/Datenschutzerklaerung', [DatenschutzerklaerungController::class, 'getDatenschutzerklaerungDaten']);
 Route::get('/Anfahrt',                           [HomeController::class, 'journey']);
+Route::get('/Ausschreibung',                     [HomeController::class, 'information']);
 
 Route::get('/Teamemailmeldebestaetigung', [TeamMailController::class, 'TeamMeldungMail'])->name('RegattaTeam.TeamMeldungMail');
 

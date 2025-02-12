@@ -21,11 +21,14 @@
                             </li>
                             @if($regattaTeam->homepage)
                                 <li>Homepage:<br>
-                                    <a href="{{ $regattaTeam->homepage }}" target="_blank">{{ $regattaTeam->homepage }}</a>
+                                    <a href="{{ $regattaTeam->homepage }}" target="_blank">zur Webseite</a>
                                 </li>
                             @endif
                             <li>Werbung:<br>
                                 {{ $regattaTeam->getRaceType->typ }}
+                            </li>
+                            <li>Meldedatum:<br>
+                                {{ \Carbon\Carbon::parse($regattaTeam->datum)->format('d.m.Y') }}
                             </li>
                         </ul>
                         </p>

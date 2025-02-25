@@ -41,7 +41,7 @@ use Illuminate\Queue\SerializesModels;
     {
         $raceType = RaceType::find($this->regattateam->gruppe_id);
         $mailtext = "";
-        $mailtext = $mailtext . '<h2>Ihre Anmeldedaten:</h2>';
+        $mailtext = $mailtext . '<h2>Ihre Anmeldedaten:</h2><br>';
         $mailtext = $mailtext . '<ul>';
         $mailtext = $mailtext . '<li>Teamname: ' . $this->regattateam->teamname . '</li>';
         $mailtext = $mailtext . '<li>Verein: ' . $this->regattateam->verein . '</li>';
@@ -55,14 +55,14 @@ use Illuminate\Queue\SerializesModels;
         $mailtext = $mailtext . '<li>Wertung: ' . $raceType->typ . '</li>';
         $mailtext = $mailtext . '<li>Beschreibung des Teams: ' . $this->regattateam->beschreibung . '</li>';
         $mailtext = $mailtext . '<li>Information an den Veranstalter: ' . $this->regattateam->kommentar . '</li>';
-        $mailtext = $mailtext . '</ul>';
+        $mailtext = $mailtext . '</ul><br>';
 
         if($this->event->emailAntwort <> '') {
-            $mailtext = $mailtext . $this->event->emailAntwort . '<br>';
+            $mailtext = $mailtext . $this->event->emailAntwort . '<br><br>';
         }
 
         if ($this->event->einverstaendnis <> ''){
-            $mailtext = $mailtext . $this->event->einverstaendnis . '<br>';
+            $mailtext = $mailtext . $this->event->einverstaendnis . '<br><br>';
 
             if ($this->regattateam->einverstaendnis == 1) {
                 $mailtext = $mailtext . "Du hast den Teilnahmebedingungen / Einverständniserklärung zugestimmt.<br><br>";
@@ -72,10 +72,10 @@ use Illuminate\Queue\SerializesModels;
         }
 
         if($this->regattateam->mailen == 'a') {
-                $mailtext = $mailtext . "Du hast zugestimmt, dass wir Ihnen Informationen zu weiteren Events per Email zusenden dürfen.<br>";
+                $mailtext = $mailtext . "Du hast zugestimmt, dass wir Ihnen Informationen zu weiteren Events per Email zusenden dürfen.<br><br>";
         }
         else {
-                $mailtext = $mailtext . "Du hast nicht zugestimmt, dass wir Ihnen Informationen zu weiteren Events per Email zusenden dürfen.<br>";
+                $mailtext = $mailtext . "Du hast nicht zugestimmt, dass wir Ihnen Informationen zu weiteren Events per Email zusenden dürfen.<br><br>";
         }
 
         return new Content(

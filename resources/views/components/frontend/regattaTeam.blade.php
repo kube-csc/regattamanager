@@ -24,10 +24,10 @@
                                     <a href="{{ $regattaTeam->homepage }}" target="_blank">zur Webseite</a>
                                 </li>
                             @endif
-                            <li>Werbung:<br>
+                            <li>Klassen:<br>
                                 {{ $regattaTeam->getRaceType->typ }}
                             </li>
-                            <li>Meldedatum:<br>
+                            <li>Anmeldedatum:<br>
                                 {{ \Carbon\Carbon::parse($regattaTeam->datum)->format('d.m.Y') }}
                             </li>
                         </ul>

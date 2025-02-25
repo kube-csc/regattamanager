@@ -13,12 +13,12 @@
                          {!! $event->beschreibung !!}
                        @endif
                     </p>
-                  @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
-                    @if($event->anmeldetext)
-                        <a href="/Meldeinformation" class="about-btn">Ausschreibung<i class="bx bx-chevron-right"></i></a>
+                    @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
+                       @if($event->anmeldetext)
+                          <a href="/Ausschreibung" class="about-btn">Ausschreibung<i class="bx bx-chevron-right"></i></a>
+                       @endif
+                       <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
                     @endif
-                    <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
-                  @endif
                 </div>
             </div>
             <div class="col-xl-7 d-flex align-items-stretch">

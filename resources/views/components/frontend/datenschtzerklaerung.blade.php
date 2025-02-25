@@ -1,3 +1,4 @@
+{{--ToDo: Umstellung die Datenauslesung über ein Controller--}}
 @foreach($instructions as $instruction)
     @php
         $texausgabe = str_replace(array("\\r\\n", "\\n", "\\r"), '<br>', $instruction->beschreibung);

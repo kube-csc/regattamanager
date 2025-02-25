@@ -13,7 +13,7 @@ Du hast das Team {{ $regattaTeam->teamname }} zum {{ $event->ueberschrift }} gem
 Button Text
 </x-mail::button>
 -->
-
+<br>
 {{ env('APP_URL') }}<br>
 {{ env('VEREIN_NAME') }}<br>
 {{ env('VEREIN_STRASSE') }}<br>

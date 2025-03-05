@@ -10,7 +10,7 @@
             {{ session('notification') }}
         </div>
     @endif
-    <form action="{{ route('RegattaTeam.store') }}" method="POST">
+    <form action="{{ route('RegattaTeam.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="regatta_id" id="regatta_id" class="form-control" value="{{$event->id}}">
          <div class="form-group">
@@ -89,11 +89,13 @@
                <div class="alert alert-danger small" role="alert">{{ $errors->first('gruppe_id') }}</div>
            @endif
         </div>
-{{--        ToDo: Bilder noch einbauen--}}
-{{--        <div class="form-group">--}}
-{{--            <label for="bild">Teamfoto</label>--}}
-{{--            <input type="file" name="bild" id="bild" class="form-control">--}}
-{{--        </div>--}}
+        <div class="form-group">
+            <label for="Teamfoto">Teamfoto:</label>
+            <input type="file" name="Teamfoto" id="Teamfoto" class="form-control" value="{{ old('Teamfoto') }}">
+            @if($errors->has('Teamfoto'))
+                <div class="alert alert-danger small" role="alert">{{ $errors->first('Teamfoto') }}</div>
+            @endif
+        </div>
         <div class="form-group">
             <label for="beschreibung">
                 Kurze Info zum Team:<br>

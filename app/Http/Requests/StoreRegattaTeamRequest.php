@@ -34,6 +34,7 @@ class StoreRegattaTeamRequest extends FormRequest
             'captcha' => 'required|integer',
             'einverstaendnis' => 'accepted',
             'gruppe_id' => 'min:1|integer',
+            'Teamfoto' => 'mimes:jpg,jpeg|max:5120', // Prüft, ob die Datei ein jpg oder jpeg Bild ist und maximal 5MB groß ist
        ];
     }
 

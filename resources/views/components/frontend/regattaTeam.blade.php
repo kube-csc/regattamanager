@@ -37,22 +37,27 @@
                     <div class="icon-box" data-aos="fade-up">
                         <h4 class="title">{{ $regattaTeam->teamname }}</h4>
                         <p class="description">
-                        <ul>
-                            <li>Verein:<br>
-                                {{ $regattaTeam->verein }}
-                            </li>
-                            @if($regattaTeam->homepage)
-                                <li>Homepage:<br>
-                                    <a href="{{ $regattaTeam->homepage }}" target="_blank">zur Webseite</a>
+                            <ul>
+                                <li>Verein / Firma / Institution:<br>
+                                    {{ $regattaTeam->verein }}
                                 </li>
-                            @endif
-                            <li>Klassen:<br>
-                                {{ $regattaTeam->getRaceType->typ }}
-                            </li>
-                            <li>Anmeldedatum:<br>
-                                {{ \Carbon\Carbon::parse($regattaTeam->datum)->format('d.m.Y') }}
-                            </li>
-                        </ul>
+                                @if($regattaTeam->homepage)
+                                    <li>Homepage:<br>
+                                        <a href="{{ $regattaTeam->homepage }}" target="_blank">zur Webseite</a>
+                                    </li>
+                                @endif
+                                <li>Klasse / Wertung:<br>
+                                    {{ $regattaTeam->getRaceType->typ }}
+                                </li>
+                                <li>Anmeldedatum:<br>
+                                    {{ \Carbon\Carbon::parse($regattaTeam->datum)->format('d.m.Y') }}
+                                </li>
+                            </ul>
+                            <div>
+                                @if($regattaTeam->bild)
+                                    <img src="{{ asset('storage/teamImage/' . $regattaTeam->bild) }}" alt="{{ $regattaTeam->teamname }}" class="img-fluid">
+                                @endif
+                            </div>
                         </p>
                     </div>
                 </div>

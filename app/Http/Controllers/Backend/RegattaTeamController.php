@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreRegattaTeamRequest;
 use App\Http\Requests\UpdateRegattaTeamRequest;
 use App\Models\RaceType;
@@ -103,8 +104,11 @@ class RegattaTeamController extends Controller
                 'einverstaendnis' => $request->einverstaendnis
             ]);
 
-            $event   = Event::find($request->regatta_id);
-            $wertung = RaceType::find($request->gruppe_id);
+            if($request->Teamfoto) {
+               $extension = $request->Teamfoto->extension();
+               $newPictureName = $this->saveInmage($request->Teamfoto, $regattaTeam->id, $extension);
+               $regattaTeam->update(['bild' => $newPictureName]);
+            }
 
             // Erstelle eine Instanz des TeamMailController
             $teamMailController = new TeamMailController();
@@ -152,4 +156,15 @@ class RegattaTeamController extends Controller
         //
     }
 
+    public function saveInmage($imageInput , $regattaTeam_id , $extension){
+
+        $newPictureName="teamImage" . $regattaTeam_id . "_" . \Illuminate\Support\Str::random(4) . "." . $extension;
+        Storage::disk('public')->putFileAs(
+            'teamImage/',
+            $imageInput,
+            $newPictureName
+        );
+
+        return  $newPictureName;
+    }
 }

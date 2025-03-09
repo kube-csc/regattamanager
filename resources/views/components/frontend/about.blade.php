@@ -74,7 +74,7 @@
                                 $delay=$delay+100;
                             @endphp
                             <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="{{$delay}}">
-                                <h4>Klassen</h4>
+                                <h4>Klassen / Wertung</h4>
                                 <ul>
                                   @foreach($raceTypes as $raceType)
                                    <li>{{ $raceType->typ }} {{ $raceType->distanz }}<br>

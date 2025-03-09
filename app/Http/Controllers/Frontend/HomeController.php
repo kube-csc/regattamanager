@@ -14,20 +14,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
-        $currentDomain = str_replace('www.', '', $currentDomain);
-
-        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
-            $query->where('domain', $currentDomain);
-        })
-            ->orderBy('datumvon', 'desc')
-            ->first();
-
-        if(!$event) {
-            $event = new \stdClass();
-            $event->ueberschrift = "Keine Veranstaltung gefunden";
-            return view('pages.frontend.noEvent' , compact('event'));
-        }
+       $event = $this->getEvent();
 
        $raceTypes = RaceType::where('regatta_id', $event->id)->get();
 
@@ -66,44 +53,21 @@ class HomeController extends Controller
 
     public function imprint()
     {
-        return view('home.imprint');
+       return view('home.imprint');
     }
 
     public function journey()
     {
-        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
-        $currentDomain = str_replace('www.', '', $currentDomain);
-
-        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
-            $query->where('domain', $currentDomain);
-        })
-            ->orderBy('datumvon', 'desc')
-            ->first();
-
-        if (!$event) {
-            $event = new \stdClass();
-            $event->ueberschrift = "Keine Veranstaltung gefunden";
-        }
+        $event = $this->getEvent();
 
         return view('pages.frontend.journey', compact('event'));
     }
 
     public function information()
     {
-        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
-        $currentDomain = str_replace('www.', '', $currentDomain);
-
-        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
-            $query->where('domain', $currentDomain);
-        })
-            ->orderBy('datumvon', 'desc')
-            ->first();
-
-        if (!$event) {
-            $event = new \stdClass();
-            $event->ueberschrift = "Keine Veranstaltung gefunden";
-        }
+        $event = $this->getEvent();
 
         return view('pages.frontend.information', compact('event'));
     }
+
 }

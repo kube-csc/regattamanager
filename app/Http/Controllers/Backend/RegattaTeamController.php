@@ -17,12 +17,7 @@ class RegattaTeamController extends Controller
      */
     public function index()
     {
-        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
-        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
-            $query->where('domain', $currentDomain);
-        })
-            ->orderBy('datumvon', 'desc')
-            ->first();
+        $event = $this->getEvent();
 
         $regattaTeams = RegattaTeam::where('regatta_id', $event->id)->get();
 
@@ -34,14 +29,7 @@ class RegattaTeamController extends Controller
      */
     public function create()
     {
-        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
-        $currentDomain = str_replace('www.', '', $currentDomain);
-
-        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
-            $query->where('domain', $currentDomain);
-        })
-            ->orderBy('datumvon', 'desc')
-            ->first();
+        $event = $this->getEvent();
 
         $raceTypes = RaceType::where('regatta_id', $event->id)->get();
 
@@ -127,12 +115,7 @@ class RegattaTeamController extends Controller
      */
     public function show(RegattaTeam $regattaTeam, $raceTeam_id)
     {
-        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
-        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
-            $query->where('domain', $currentDomain);
-        })
-            ->orderBy('datumvon', 'desc')
-            ->first();
+        $event = $this->getEvent();
 
         $regattaTeam = RegattaTeam::find($raceTeam_id);
 

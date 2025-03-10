@@ -21,7 +21,12 @@ class RegattaTeamController extends Controller
 
         $regattaTeams = RegattaTeam::where('regatta_id', $event->id)->get();
 
-        return view('pages.frontend.regattaTeams', compact('event','regattaTeams'));
+       $regattaTeamCounts = RegattaTeam::where('regatta_id', $event->id)
+           ->select('gruppe_id', \DB::raw('count(*) as total'))
+           ->groupBy('gruppe_id')
+           ->get();
+
+        return view('pages.frontend.regattaTeams', compact('event','regattaTeams', 'regattaTeamCounts'));
     }
 
     /**

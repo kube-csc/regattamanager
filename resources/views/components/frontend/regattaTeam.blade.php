@@ -1,4 +1,26 @@
 
+<!-- ======= Counts Section ======= -->
+<section id="counts" class="counts  section-bg">
+    <div class="container">
+        <div class="row no-gutters">
+            @foreach($regattaTeamCounts as $regattaTeamCount)
+                @if($regattaTeamCount->total > 0)
+                    <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch">
+                        <div class="count-box">
+                            <i class="icofont-users-alt-5"></i>
+                            <span data-toggle="counter-up">{{ $regattaTeamCount->total }}</span>
+                            <p><strong>{{ $regattaTeamCount->getRaceType->typ }}</strong></p>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    </div>
+</section><!-- End Counts Section -->
+
+
+
+
 <!-- ======= Services Section ======= -->
 <section id="services" class="services">
     <div class="container">

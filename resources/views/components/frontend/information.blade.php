@@ -13,3 +13,18 @@
 
     </div>
 </section><!-- End Services Section -->
+
+@if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
+    <!-- ======= Cta Section ======= -->
+    <section id="cta" class="cta">
+        <div class="container" data-aos="zoom-in">
+
+            <div class="text-center">
+                <h3>Eure Chance, dabei zu sein!</h3>
+                <p>Jetzt anmelden und Teil des {{ $event->ueberschrift }} werden – das ultimative Erlebnis wartet!</p>
+                <a class="cta-btn" href="/Meldung">Melden</a>
+            </div>
+
+        </div>
+    </section><!-- End Cta Section -->
+@endif

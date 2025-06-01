@@ -14,12 +14,15 @@
             <ul>
                 <li class="active"><a href="/">Home</a></li>
                 <li><a href="/#about">Informationen</a></li>
-                @if($event->anmeldetext && $event->beschreibung)
-                   <li><a href="/Ausschreibung">Ausschreibung</a></li>
-                @endif
-                @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
-                <li><a href="/Meldung">Melden</a></li>
-                <li><a href="/Regattateams">Gemeldete Teams</a></li>
+                @if($event)
+                    @if($event->anmeldetext && $event->beschreibung)
+                       <li><a href="/Ausschreibung">Ausschreibung</a></li>
+                    @endif
+
+                    @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
+                    <li><a href="/Meldung">Melden</a></li>
+                    <li><a href="/Regattateams">Gemeldete Teams</a></li>
+                    @endif
                 @endif
                 <li><a href="/Anfahrt">Anfahrt</a></li>
                 {{--

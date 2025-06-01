@@ -25,6 +25,7 @@
             <div class="text-center">
                 <h3>Eure Chance, dabei zu sein!</h3>
                 <p>Jetzt anmelden und Teil des {{ $event->ueberschrift }} werden – das ultimative Erlebnis wartet!</p>
+                <p>Es haben {{ $teamRaceCount  }} Teams gemeldet.</p>
                 <a class="cta-btn" href="/Meldung">Melden</a>
             </div>
 

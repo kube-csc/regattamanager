@@ -20,9 +20,11 @@ class RegattaTeamController extends Controller
     {
         $event = $this->getEvent();
 
-        $regattaTeams = RegattaTeam::where('regatta_id', $event->id)->get();
+        $regattaTeams = RegattaTeam::where('regatta_id', $event->id)
+           ->orderBy('datum')
+           ->get();
 
-       $regattaTeamCounts = RegattaTeam::where('regatta_id', $event->id)
+        $regattaTeamCounts = RegattaTeam::where('regatta_id', $event->id)
            ->select('gruppe_id', \DB::raw('count(*) as total'))
            ->groupBy('gruppe_id')
            ->get();

@@ -20,6 +20,7 @@ abstract class Controller
         if (!$event) {
             $event = new \stdClass();
             $event->ueberschrift = "Keine Veranstaltung gefunden";
+            $event->id = null;
         }
 
         return $event;

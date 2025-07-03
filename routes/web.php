@@ -5,16 +5,23 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Backend\RegattaTeamController;
 use App\Http\Controllers\Frontend\ImpressumController;
 use App\Http\Controllers\Frontend\DatenschutzerklaerungController;
+use App\Http\Controllers\Api\APIController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/',                                  [HomeController::class, 'index'])->name('pages.frontend.home');
-Route::get('/Impressum',                         [ImpressumController::class, 'getImpressumDaten']);
-Route::get('/Information/Datenschutzerklaerung', [DatenschutzerklaerungController::class, 'getDatenschutzerklaerungDaten']);
-Route::get('/Anfahrt',                           [HomeController::class, 'journey']);
-Route::get('/Ausschreibung',                     [HomeController::class, 'information']);
+Route::get('/',                                   [HomeController::class, 'index'])->name('pages.frontend.home');
+Route::get('/Impressum',                          [ImpressumController::class, 'getImpressumDaten']);
+Route::get('/Information/Datenschutzerklaerung',  [DatenschutzerklaerungController::class, 'getDatenschutzerklaerungDaten']);
+Route::get('/Anfahrt',                            [HomeController::class, 'journey']);
+Route::get('/Ausschreibung',                      [HomeController::class, 'information']);
 
-Route::get('/Teamemailmeldebestaetigung', [TeamMailController::class, 'TeamMeldungMail'])->name('RegattaTeam.TeamMeldungMail');
+Route::get('/API/Starterliste',                   [APIController::class, 'APIStartliste'])->name('api.regattaTeams.APIStartliste');
+
+if (env('API_TEAMADRESSE') === 'ja') {
+    Route::get('/API/Teamliste', [APIController::class, 'APITeamliste'])->name('api.regattaTeams.APITeamliste');
+}
+
+Route::get('/Teamemailmeldebestaetigung',         [TeamMailController::class, 'TeamMeldungMail'])->name('RegattaTeam.TeamMeldungMail');
 
 Route::get('/Regattateams',                       [RegattaTeamController::class, 'index'])->name('RegattaTeam.index');
 Route::get('/Meldung',                            [RegattaTeamController::class, 'create'])->name('RegattaTeam.create');

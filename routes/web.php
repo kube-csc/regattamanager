@@ -15,10 +15,11 @@ Route::get('/Information/Datenschutzerklaerung',  [DatenschutzerklaerungControll
 Route::get('/Anfahrt',                            [HomeController::class, 'journey']);
 Route::get('/Ausschreibung',                      [HomeController::class, 'information']);
 
-Route::get('/API/Starterliste',                   [APIController::class, 'APIStartliste'])->name('api.regattaTeams.APIStartliste');
+Route::get('/API/Gemeldeteteams',                   [APIController::class, 'APIStartliste'])->name('api.regattaTeams.APIStartliste');
+Route::get('/API/Sprecherkarten',                   [APIController::class, 'APISprecherkarte']);
 
-if (env('API_TEAMADRESSE') === 'ja') {
-    Route::get('/API/Teamliste', [APIController::class, 'APITeamliste'])->name('api.regattaTeams.APITeamliste');
+if (env('API_TEAMDATEN') === 'ja') {
+    Route::get('/API/Teamdaten', [APIController::class, 'APITeamliste'])->name('api.regattaTeams.APITeamliste');
 }
 
 Route::get('/Teamemailmeldebestaetigung',         [TeamMailController::class, 'TeamMeldungMail'])->name('RegattaTeam.TeamMeldungMail');

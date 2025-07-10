@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class APIController extends Controller
 {
+    // Hilfsfunktion im Controller ergänzen
+    private function cleanCsvField($value) {
+        return str_replace([";", "\r", "\n"], [",", "<br>", "<br>"], $value);
+    }
+
     public function APIStartliste()
     {
         $event = $this->getEvent();
@@ -33,10 +38,10 @@ class APIController extends Controller
                 fwrite($file, "\xEF\xBB\xBF");
                 foreach ($regattateams as $key => $team) {
                     $row = [
-                        $team->laufende_nummer,
-                        $team->teamname,
-                        $team->verein,
-                        $team->getRaceType->typ,
+                        $this->cleanCsvField($team->laufende_nummer),
+                        $this->cleanCsvField($team->teamname),
+                        $this->cleanCsvField($team->verein),
+                        $this->cleanCsvField($team->getRaceType->typ),
                     ];
                     fputcsv($file, $row, ';');
                 }
@@ -44,15 +49,14 @@ class APIController extends Controller
             };
 
             return response()->stream($callback, 200, $headers);
-
         }
     }
 
-    public function APITeamliste()
+    public function APITeamliste( $code )
     {
         $event = $this->getEvent();
 
-        if (empty($event->mitgliederSicherheitscode) || now()->gt($event->mitgliederSicherheitscodeEnddatum)) {
+        if (empty($event->mitgliederSicherheitscode == $code) || now()->gt($event->mitgliederSicherheitscodeEnddatum)) {
             abort(403, 'Bearbeitung nicht erlaubt.');
         }
 
@@ -78,16 +82,16 @@ class APIController extends Controller
                 fputcsv($file, ['Nr.', 'Teamname', 'Verein', 'Straße', 'PLZ', 'Ort', 'Telefon', 'E-Mail', 'Training', 'Renn-Typ'], ';');
                 foreach ($regattateams as $key => $team) {
                     $row = [
-                        $team->laufende_nummer,
-                        $team->teamname,
-                        $team->verein,
-                        $team->strasse,
-                        $team->plz,
-                        $team->ort,
-                        $team->telefon,
-                        $team->email,
-                        $team->training,
-                        $team->getRaceType->typ,
+                        $this->cleanCsvField($team->laufende_nummer),
+                        $this->cleanCsvField($team->teamname),
+                        $this->cleanCsvField($team->verein),
+                        $this->cleanCsvField($team->strasse),
+                        $this->cleanCsvField($team->plz),
+                        $this->cleanCsvField($team->ort),
+                        $this->cleanCsvField($team->telefon),
+                        $this->cleanCsvField($team->email),
+                        $this->cleanCsvField($team->training),
+                        $this->cleanCsvField($team->getRaceType->typ),
                     ];
                     fputcsv($file, $row, ';');
                 }
@@ -106,7 +110,11 @@ class APIController extends Controller
             $regattateams = RegattaTeam::where('regatta_id', $event->id)
                 ->where('status', '!=', 'gelöscht')
                 ->orderBy('datum')
-                ->get();
+                ->get()
+                ->values()
+                ->each(function ($item, $key) {
+                    $item->laufende_nummer = $key + 1;
+                });
 
             $headers = [
                 'Content-Type' => 'text/csv',
@@ -131,13 +139,13 @@ class APIController extends Controller
                     $row = array_map(function($value) {
                         return mb_convert_encoding($value, 'UTF-8', 'auto');
                     }, [
-                        $team->laufende_nummer,
-                        $team->mailendatum ? \Carbon\Carbon::parse($team->mailendatum)->format('d.m.Y') : '',
-                        $team->teamname,
-                        $team->verein,
-                        $team->ort,
-                        $team->getRaceType->typ,
-                        $team->beschreibung,
+                        $this->cleanCsvField($team->laufende_nummer),
+                        $this->cleanCsvField($team->mailendatum ? \Carbon\Carbon::parse($team->mailendatum)->format('d.m.Y') : ''),
+                        $this->cleanCsvField($team->teamname),
+                        $this->cleanCsvField($team->verein),
+                        $this->cleanCsvField($team->ort),
+                        $this->cleanCsvField($team->getRaceType->typ),
+                        $this->cleanCsvField($team->beschreibung),
                         "",
                         "",
                     ]);

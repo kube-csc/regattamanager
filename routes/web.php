@@ -19,7 +19,7 @@ Route::get('/API/Gemeldeteteams',                   [APIController::class, 'APIS
 Route::get('/API/Sprecherkarten',                   [APIController::class, 'APISprecherkarte']);
 
 if (env('API_TEAMDATEN') === 'ja') {
-    Route::get('/API/Teamdaten', [APIController::class, 'APITeamliste'])->name('api.regattaTeams.APITeamliste');
+    Route::get('/API/Teamdaten/{code}', [APIController::class, 'APITeamliste'])->name('api.regattaTeams.APITeamliste');
 }
 
 Route::get('/Teamemailmeldebestaetigung',         [TeamMailController::class, 'TeamMeldungMail'])->name('RegattaTeam.TeamMeldungMail');

@@ -13,11 +13,13 @@
                          {!! $event->beschreibung !!}
                        @endif
                     </p>
-                    @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
+                    @if($event->email)
                        @if($event->anmeldetext)
                           <a href="/Ausschreibung" class="about-btn">Ausschreibung<i class="bx bx-chevron-right"></i></a>
                        @endif
-                       <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
+                       @if($event->datumvona && $event->datumbisa && now()->between($event->datumvona, $event->datumbisa))
+                          <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
+                       @endif
                     @endif
                 </div>
             </div>
@@ -149,19 +151,34 @@
     </div>
 </section><!-- End About Section -->
 
-@if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
-<!-- ======= Cta Section ======= -->
-<section id="cta" class="cta">
-    <div class="container" data-aos="zoom-in">
+@if($event->email && $event->datumvona)
+    @if($event->datumbisa && now()->between($event->datumvona, $event->datumbisa))
+        <!-- ======= Cta Section ======= -->
+        <section id="cta" class="cta">
+            <div class="container" data-aos="zoom-in">
 
-        <div class="text-center">
-            <h3>Eure Chance, dabei zu sein!</h3>
-            <p>Jetzt anmelden und Teil des {{ $event->ueberschrift }} werden – das ultimative Erlebnis wartet!</p>
-            <p>Es haben {{ $teamRaceCount  }} Teams gemeldet.</p>
-            <a class="cta-btn" href="/Meldung">Melden</a>
-           </div>
+                <div class="text-center">
+                    <h3>Eure Chance, dabei zu sein!</h3>
+                    <p>Jetzt anmelden und Teil des {{ $event->ueberschrift }} werden – das ultimative Erlebnis wartet!</p>
+                    <p>Es haben {{ $teamRaceCount  }} Teams gemeldet.</p>
+                    <a class="cta-btn" href="/Meldung">Melden</a>
+                </div>
 
-    </div>
-</section><!-- End Cta Section -->
+            </div>
+        </section><!-- End Cta Section -->
+    @endif
+    @if(now() > $event->datumbisa)
+        <!-- ======= Cta Section ======= -->
+        <section id="cta" class="cta">
+            <div class="container" data-aos="zoom-in">
+
+                <div class="text-center">
+                    <h3>Es haben viele die Chance genutzt, dabei zu sein!</h3>
+                    <p>Insgesamt {{ $teamRaceCount }} Teams haben sich angemeldet.</p>
+                </div>
+
+            </div>
+        </section><!-- End Cta Section -->
+    @endif
 @endif
 

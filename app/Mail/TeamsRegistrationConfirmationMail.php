@@ -7,6 +7,7 @@ use App\Models\RaceType;
 use Illuminate\Bus\Queueable;
 //use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -40,8 +41,16 @@ use Illuminate\Queue\SerializesModels;
     public function content(): Content
     {
         $raceType = RaceType::find($this->regattateam->gruppe_id);
-        $mailtext = "";
-        $mailtext = $mailtext . '<h2>Ihre Anmeldedaten:</h2><br>';
+
+        if($this->regattateam->status == 'Warteliste'){
+            $mailtext = 'ihr Team ' . $this->regattateam->teamname . ' wurde auf die Warteliste für ' . $this->event->ueberschrift . ' gesetzt.';
+        }
+        else{
+            $mailtext = 'du hast das Team ' . $this->regattateam->teamname . ' für ' . $this->event->ueberschrift . ' gemeldet.';
+        }
+
+        $mailtext = $mailtext . '<br>';
+        $mailtext = $mailtext . '<h2>Ihre Anmeldedaten:</h2>';
         $mailtext = $mailtext . '<ul>';
         $mailtext = $mailtext . '<li>Teamname: ' . $this->regattateam->teamname . '</li>';
         $mailtext = $mailtext . '<li>Verein: ' . $this->regattateam->verein . '</li>';
@@ -55,14 +64,14 @@ use Illuminate\Queue\SerializesModels;
         $mailtext = $mailtext . '<li>Wertung: ' . $raceType->typ . '</li>';
         $mailtext = $mailtext . '<li>Beschreibung des Teams: ' . $this->regattateam->beschreibung . '</li>';
         $mailtext = $mailtext . '<li>Information an den Veranstalter: ' . $this->regattateam->kommentar . '</li>';
-        $mailtext = $mailtext . '</ul><br>';
+        $mailtext = $mailtext . '</ul>';
 
         if($this->event->emailAntwort <> '') {
-            $mailtext = $mailtext . $this->event->emailAntwort . '<br><br>';
+            $mailtext = $mailtext . $this->event->emailAntwort . '<br>';
         }
 
         if ($this->event->einverstaendnis <> ''){
-            $mailtext = $mailtext . $this->event->einverstaendnis . '<br><br>';
+            $mailtext = $mailtext . $this->event->einverstaendnis . '<br>';
 
             if ($this->regattateam->einverstaendnis == 1) {
                 $mailtext = $mailtext . "Du hast den Teilnahmebedingungen / Einverständniserklärung zugestimmt.<br><br>";
@@ -81,9 +90,9 @@ use Illuminate\Queue\SerializesModels;
         return new Content(
             markdown: 'emails.teams.teamsRegistrationConfirmation',
             with: [
-                'mailtext' => $mailtext,
+                'mailtext'    => $mailtext,
                 'regattaTeam' => $this->regattateam,
-                'event' => $this->event,
+                'event'       => $this->event,
             ],
         );
     }
@@ -91,7 +100,7 @@ use Illuminate\Queue\SerializesModels;
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

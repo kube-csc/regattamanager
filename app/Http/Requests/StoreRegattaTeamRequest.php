@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRegattaTeamRequest extends FormRequest
 {
@@ -22,19 +23,26 @@ class StoreRegattaTeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'teamname' => 'required|string|max:255',
-            'verein' => 'required|string|max:255',
-            'teamcaptain' => 'required|string|max:255',
-            'strasse' => 'required|string|max:255',
-            'plz' => 'required|string|max:255',
-            'ort' => 'required|string|max:255',
-            'telefon' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'homepage' => 'nullable|string|max:255',
-            'captcha' => 'required|integer',
+            'teamname' => [
+                'required',
+                'max:255',
+                'string',
+                Rule::unique('regatta_teams')->where(function ($query) {
+                    return $query->where('regatta_id', $this->request->get('regatta_id'));
+                }),
+            ],
+            'verein'          => 'required|string|max:255',
+            'teamcaptain'     => 'required|string|max:255',
+            'strasse'         => 'required|string|max:255',
+            'plz'             => 'required|string|max:255',
+            'ort'             => 'required|string|max:255',
+            'telefon'         => 'required|string|max:255',
+            'email'           => 'required|string|email|max:255',
+            'homepage'        => 'nullable|string|max:255',
+            'captcha'         => 'required|integer',
             'einverstaendnis' => 'accepted',
-            'gruppe_id' => 'min:1|integer',
-            'Teamfoto' => 'mimes:jpg,jpeg|max:5120', // Prüft, ob die Datei ein jpg oder jpeg Bild ist und maximal 5MB groß ist
+            'gruppe_id'       => 'min:1|integer',
+            'Teamfoto'        => 'mimes:jpg,jpeg|max:5120', // Prüft, ob die Datei ein jpg oder jpeg Bild ist und maximal 5MB groß ist
        ];
     }
 
@@ -42,7 +50,8 @@ class StoreRegattaTeamRequest extends FormRequest
     {
         return [
             'einverstaendnis.accepted' => 'Du must den Teilnahmebedingungen / Einverständniserklärung zustimmen.',
-            'gruppe_id.min' => 'Bitte wähle eine Wertung / Klasse.',
+            'gruppe_id.min'            => 'Bitte wähle eine Wertung / Klasse.',
+            'teamname.unique'          => 'Der Teamname ist bereits vorhanden.'
        ];
     }
 }

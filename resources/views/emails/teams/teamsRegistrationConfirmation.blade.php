@@ -1,11 +1,8 @@
 <x-mail::message>
 # Anmeldung zum {{ $event->ueberschrift }}
 
-Hallo {{ $regattaTeam->teamcaptain }},<br>
-
-Du hast das Team {{ $regattaTeam->teamname }} zum {{ $event->ueberschrift }} gemeldet: <br> <br>
-
-
+Hallo {{ $regattaTeam->teamcaptain }},
+<br>
 {!! $mailtext !!}
 
 <!--

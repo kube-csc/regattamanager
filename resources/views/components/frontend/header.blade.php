@@ -19,9 +19,11 @@
                        <li><a href="/Ausschreibung">Ausschreibung</a></li>
                     @endif
 
-                    @if($event->datumvona && $event->datumbis && $event->email && now()->between($event->datumvona, $event->datumbis))
-                    <li><a href="/Meldung">Melden</a></li>
-                    <li><a href="/Regattateams">Gemeldete Teams</a></li>
+                    @if($event->datumvona && $event->datumbisa && $event->email && now()->between($event->datumvona, $event->datumbisa))
+                       <li><a href="/Meldung">Melden</a></li>
+                    @endif
+                    @if($event->email)
+                       <li><a href="/Regattateams">Gemeldete Teams</a></li>
                     @endif
                 @endif
                 <li><a href="/Anfahrt">Anfahrt</a></li>

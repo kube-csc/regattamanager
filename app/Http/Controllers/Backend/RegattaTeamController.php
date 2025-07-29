@@ -21,6 +21,7 @@ class RegattaTeamController extends Controller
         $event = $this->getEvent();
 
         $regattaTeams = RegattaTeam::where('regatta_id', $event->id)
+           ->where('status', '!=', 'gelöscht')
            ->orderBy('datum')
            ->get();
 
@@ -41,10 +42,14 @@ class RegattaTeamController extends Controller
 
         $raceTypes = RaceType::where('regatta_id', $event->id)->get();
 
+        $regattaTeamCount = RegattaTeam::where('regatta_id', $event->id)
+            ->where('status', '!=', 'gelöscht')
+            ->count();
+
         $num1 = rand(1, 10);
         $num2 = rand(1, 10);
 
-        return view('pages.frontend.meldung', compact('event', 'raceTypes', 'num1', 'num2'));
+        return view('pages.frontend.meldung', compact('event', 'raceTypes', 'num1', 'num2', 'regattaTeamCount'));
     }
 
     /**
@@ -78,6 +83,18 @@ class RegattaTeamController extends Controller
                 $request->einverstaendnis=0;
             }
 
+            $event = $this->getEvent();
+            $regattaTeamCount = RegattaTeam::where('regatta_id', $event->id)
+            ->where('status', '!=', 'gelöscht')
+            ->count();
+
+            $status = "Neuanmeldung";
+            $successText ='Ihr Team '. $request->teamname . ' wurde erfolgreich gemeldet.';
+            if($event->teilnehmer < $regattaTeamCount && $event->teilnehmermax == '2'){
+              $status = "Warteliste";
+              $successText ='Ihr Team '. $request->teamname . ' wurde auf der Warteliste gesetzte.';
+            }
+
             $request->session()->put('meldung_done', true);
 
             $regattaTeam = RegattaTeam::create([
@@ -101,7 +118,7 @@ class RegattaTeamController extends Controller
                 'training' => $raceType->training,
                 'teamlink' => 0, //ToDo: Teamlink ermitteln
                 'passwort' => Str::random(10), //ToDo: Passwort ermitteln
-                'status' => 'Neuanmeldung',
+                'status' => $status,
                 'mannschaftsmail' => 'M',
                 'einverstaendnis' => $request->einverstaendnis
             ]);
@@ -117,8 +134,7 @@ class RegattaTeamController extends Controller
             // Rufe die TeamMeldungMail Methode auf
             $teamMailController->TeamMeldungMail();
 
-            return redirect('/Meldung/Bestaetigung/'.$regattaTeam->id)
-                ->with('success', 'Ihr Team '. $regattaTeam->teamname . ' wurde erfolgreich gemeldet.');
+            return redirect('/Meldung/Bestaetigung/'.$regattaTeam->id);
     }
 
     /**
@@ -127,11 +143,20 @@ class RegattaTeamController extends Controller
     public function show(RegattaTeam $regattaTeam, $raceTeam_id)
     {
         $event = $this->getEvent();
-
         $regattaTeam = RegattaTeam::find($raceTeam_id);
+        $regattaTeamCount = RegattaTeam::where('regatta_id', $event->id)
+            ->where('status', '!=', 'gelöscht')
+            ->count();
+
+        if($event->teilnehmer < $regattaTeamCount && $event->teilnehmermax == '2'){
+            $successText ='Ihr Team '. $regattaTeam->teamname . ' wurde auf der Warteliste gesetzte.';
+        }
+        else{
+            $successText ='Ihr Team '. $regattaTeam->teamname . ' wurde erfolgreich gemeldet.';
+        }
 
         return view('pages.frontend.notificationTeam', compact('event', 'regattaTeam'))
-              ->with('success', 'Ihr Team '. $regattaTeam->teamname . ' wurde erfolgreich gemeldet.');
+              ->with('success', $successText);
     }
 
     /**

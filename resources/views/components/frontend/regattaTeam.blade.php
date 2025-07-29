@@ -3,7 +3,8 @@
 <section id="counts" class="counts  section-bg">
     <div class="container">
         <div class="row no-gutters">
-            @foreach($regattaTeamCounts as $regattaTeamCount)
+
+           @foreach($regattaTeamCounts as $regattaTeamCount)
                 @if($regattaTeamCount->total > 0)
                     <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch">
                         <div class="count-box">
@@ -13,32 +14,44 @@
                         </div>
                     </div>
                 @endif
-            @endforeach
+           @endforeach
+           @if($regattaTeamCount->count() == 0)
+              <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch">
+                <div class="count-box">
+                  <p><strong>Es haben noch keine Teams gemeldet.</strong></p>
+                </div>
+              </div>
+           @endif
+
         </div>
     </div>
 </section><!-- End Counts Section -->
-
-
-
 
 <!-- ======= Services Section ======= -->
 <section id="services" class="services">
     <div class="container">
 
-        <div class="section-title" data-aos="fade-in" data-aos-delay="100">
+        <div class="section-title" data-aos="fade-in" data-aos-delay="50">
             <h2>Meldung {{ $event->ueberschrift }}</h2>
         </div>
 
         <div class="row">
-
+            @php
+            $delay=50;
+            @endphp
             @foreach($regattaTeams as $regattaTeam)
-
+                @php
+                    $delay=$delay+25;
+                @endphp
                 <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0">
-                    <div class="icon-box" data-aos="fade-up">
+                    <div class="icon-box" data-aos="fade-in" data-aos-delay="{{ $delay }}">
+                        @if($regattaTeam->status == 'Warteliste')
+                            <p class="text-danger font-weight-bold">aktuell auf der Warteliste</p>
+                        @endif
                         <h4 class="title">{{ $regattaTeam->teamname }}</h4>
                         <p class="description">
                             <ul>
-                                <li>Verein / Firma / Institution:<br>
+                                 <li>Verein / Firma / Institution:<br>
                                     {{ $regattaTeam->verein }}
                                 </li>
                                 @if($regattaTeam->homepage)

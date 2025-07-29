@@ -10,6 +10,13 @@
             {{ session('notification') }}
         </div>
     @endif
+    @if($event->teilnehmer < $regattaTeamCount && $event->teilnehmermax == '2')
+        <div class="alert alert-warning">
+            Wir müssen dir leider mitteilen, dass unser aktuelles Event bereits vollständig ausgebucht ist.
+            Du kannst dich jedoch gerne auf unsere Warteliste setzen lassen. Sobald ein Platz frei wird, informieren wir dich umgehend.
+            Vielen Dank für dein Verständnis und deine Geduld. Wir freuen uns sehr über dein Interesse und hoffen, dich bei einer unserer kommenden Regatten begrüßen zu dürfen!
+        </div>
+    @endif
     <form action="{{ route('RegattaTeam.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="regatta_id" id="regatta_id" class="form-control" value="{{$event->id}}">

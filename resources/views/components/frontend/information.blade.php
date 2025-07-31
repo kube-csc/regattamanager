@@ -9,7 +9,10 @@
             {!! $event->beschreibung !!}
         </div>
         <div>
-            @if($event->datumvona && $event->datumbisa && $event->email && now()->between($event->datumvona, $event->datumbisa))
+            @if($event->datumvona &&
+                $event->datumbisa &&
+                now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&
+                now()->toDateString() <= \Carbon\Carbon::parse($event->datumbisa)->toDateString())
                 <br>
                 <a href="/Meldung" class="about-btn xx-large" style="font-size: xx-large;">Melden<i class="bx bx-chevron-right"></i></a>
             @endif
@@ -17,8 +20,9 @@
     </div>
 </section><!-- End Services Section -->
 
-@if($event->email && $event->datumvona)
-    @if($event->datumbisa && now()->between($event->datumvona, $event->datumbisa))
+@if($event->email && $event->datumvona && $event->datumbisa)
+    @if(now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&
+        now()->toDateString() <= \Carbon\Carbon::parse($event->datumbisa)->toDateString())
         <!-- ======= Cta Section ======= -->
         <section id="cta" class="cta">
             <div class="container" data-aos="zoom-in">
@@ -33,7 +37,7 @@
             </div>
         </section><!-- End Cta Section -->
     @endif
-    @if($event->datumbisa && now() > $event->datumbisa)
+    @if(now()->toDateString() > \Carbon\Carbon::parse($event->datumbisa)->toDateString())
         <!-- ======= Cta Section ======= -->
         <section id="cta" class="cta">
             <div class="container" data-aos="zoom-in">

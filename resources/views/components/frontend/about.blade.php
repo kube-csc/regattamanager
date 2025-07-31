@@ -17,8 +17,11 @@
                        @if($event->anmeldetext)
                           <a href="/Ausschreibung" class="about-btn">Ausschreibung<i class="bx bx-chevron-right"></i></a>
                        @endif
-                       @if($event->datumvona && $event->datumbisa && now()->between($event->datumvona, $event->datumbisa))
-                          <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
+                       @if($event->datumvona &&
+                            $event->datumbisa &&
+                            now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&
+                            now()->toDateString() <= \Carbon\Carbon::parse($event->datumbisa)->toDateString())
+                       <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
                        @endif
                     @endif
                 </div>
@@ -151,8 +154,9 @@
     </div>
 </section><!-- End About Section -->
 
-@if($event->email && $event->datumvona)
-    @if($event->datumbisa && now()->between($event->datumvona, $event->datumbisa))
+@if($event->email && $event->datumvona && $event->datumbisa)
+    @if(now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&
+        now()->toDateString() <= \Carbon\Carbon::parse($event->datumbisa)->toDateString())
         <!-- ======= Cta Section ======= -->
         <section id="cta" class="cta">
             <div class="container" data-aos="zoom-in">
@@ -167,7 +171,7 @@
             </div>
         </section><!-- End Cta Section -->
     @endif
-    @if(now() > $event->datumbisa)
+    @if(now()->toDateString() > \Carbon\Carbon::parse($event->datumbisa)->toDateString())
         <!-- ======= Cta Section ======= -->
         <section id="cta" class="cta">
             <div class="container" data-aos="zoom-in">

@@ -19,7 +19,10 @@
                        <li><a href="/Ausschreibung">Ausschreibung</a></li>
                     @endif
 
-                    @if($event->datumvona && $event->datumbisa && $event->email && now()->between($event->datumvona, $event->datumbisa))
+                    @if($event->datumvona &&
+                        $event->datumbisa &&
+                        now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&
+                        now()->toDateString() <= \Carbon\Carbon::parse($event->datumbisa)->toDateString())
                        <li><a href="/Meldung">Melden</a></li>
                     @endif
                     @if($event->email)

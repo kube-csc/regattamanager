@@ -1,4 +1,4 @@
-<h1>Internetauftritt von ein <Regattamanager</h1>
+<h1>Internetauftritt von einen Regattamanagesystem</h1>
 <p>Version: V00.01.xx</p>
 <p>
 Ausgelegt z.B. für einen Verein mit verschiedenen Abteilungen / Sportarten

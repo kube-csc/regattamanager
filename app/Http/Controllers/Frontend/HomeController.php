@@ -17,7 +17,7 @@ class HomeController extends Controller
     {
         $event = $this->getEvent();
         $teamRaceCount = RegattaTeam::where('regatta_id', $event->id)
-            ->where('status', '!=', 'gelöscht')
+            ->where('status', '!=', 'Gelöscht')
             ->count();
 
         if ($event->id != null) {
@@ -77,7 +77,7 @@ class HomeController extends Controller
     {
         $event = $this->getEvent();
         $teamRaceCount = RegattaTeam::where('regatta_id', $event->id)
-            ->where('status', '!=', 'gelöscht')
+            ->where('status', '!=', 'Gelöscht')
             ->count();
 
         return view('pages.frontend.information', compact('event', 'teamRaceCount'));

@@ -11,6 +11,16 @@ use App\Models\RegattaTeam;
 use App\Models\Event;
 use Str;
 
+/**
+ * Feld 'status' - Status der Team-Meldung.
+ * Mögliche Werte:
+ * - Neumeldung: Aktiv gemeldetes Team
+ * - Warteliste: Team steht auf der Warteliste
+ * - Nicht angetreten: Team ist nicht angetreten
+ * - Disqualifiziert: Team wurde disqualifiziert
+ * - Ausgeschieden: Team ist ausgeschieden
+ * - Gelöscht: Team wurde gelöscht (nicht mehr sichtbar)
+ */
 class RegattaTeamController extends Controller
 {
     /**
@@ -21,12 +31,13 @@ class RegattaTeamController extends Controller
         $event = $this->getEvent();
 
         $regattaTeams = RegattaTeam::where('regatta_id', $event->id)
-           ->where('status', '!=', 'gelöscht')
+           ->where('status', '!=', 'Gelöscht')
            ->orderBy('datum')
            ->get();
 
         $regattaTeamCounts = RegattaTeam::where('regatta_id', $event->id)
-           ->select('gruppe_id', \DB::raw('count(*) as total'))
+            ->where('status', '!=', 'Gelöscht')
+            ->select('gruppe_id', \DB::raw('count(*) as total'))
            ->groupBy('gruppe_id')
            ->get();
 
@@ -43,7 +54,7 @@ class RegattaTeamController extends Controller
         $raceTypes = RaceType::where('regatta_id', $event->id)->get();
 
         $regattaTeamCount = RegattaTeam::where('regatta_id', $event->id)
-            ->where('status', '!=', 'gelöscht')
+            ->where('status', '!=', 'Gelöscht')
             ->count();
 
         $num1 = rand(1, 10);
@@ -85,7 +96,7 @@ class RegattaTeamController extends Controller
 
             $event = $this->getEvent();
             $regattaTeamCount = RegattaTeam::where('regatta_id', $event->id)
-            ->where('status', '!=', 'gelöscht')
+            ->where('status', '!=', 'Gelöscht')
             ->count();
 
             $status = "Neuanmeldung";
@@ -145,7 +156,7 @@ class RegattaTeamController extends Controller
         $event = $this->getEvent();
         $regattaTeam = RegattaTeam::find($raceTeam_id);
         $regattaTeamCount = RegattaTeam::where('regatta_id', $event->id)
-            ->where('status', '!=', 'gelöscht')
+            ->where('status', '!=', 'Gelöscht')
             ->count();
 
         if($event->teilnehmer < $regattaTeamCount && $event->teilnehmermax == '2'){

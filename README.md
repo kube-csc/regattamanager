@@ -1,7 +1,7 @@
 <h1>Internetauftritt von einen Regattamanagesystem</h1>
-<p>Version: V00.01.xx</p>
+<p>Version: V00.02.xx</p>
 <p>
-Ausgelegt z.B. für einen Verein mit verschiedenen Abteilungen / Sportarten
+Ausgelegt z.B.&nbsp;für einen Verein mit verschiedenen Abteilungen / Sportarten
 </p>
 Beispiel ein Kanu Verein mit Abteilungen / Sportarten:
     <ul>
@@ -72,7 +72,7 @@ benötigt.
    <li>curl -sS https://getcomposer.org/installer</li>
    <li>php composer.phar</li>
    <li>php composer.phar install</li>
-   <li>die Unterordner unter "/storage/app/public/" sollten angelegt sein, wenn nicht von hand anlegen
+   <li>Die Unterordner unter "/storage/app/public/" sollten angelegt sein, wenn nicht von hand anlegen
        <ul>
          <li>boardPortrait</li>
        </ul>
@@ -85,11 +85,13 @@ benötigt.
      <li>mailImpressum.blade.php anlegen und mit der Vorlage von mailImpressum_example.blade.php ausfüllen</li>
      <li>footer.blade.php anlegen und mit der Vorlage von footer_example.blade.php ausfüllen</li>
    </ul>
-   <li>in Ordner "public sind die folgenden Dateien anzulegen:
-   <ul>
-     <li>apple-touch-icon.png</li>
-     <li>favicon.ico</li>
-   </ul>
+   <li>In Ordner "public sind die folgenden Dateien anzulegen:
+       <ul>
+         <li>apple-touch-icon.png</li>
+         <li>favicon.ico</li>
+       </ul>
+   </li>
+   <li>php artisan storage:link</li>
 </ul>
 
 <h2>Backend</h2>
@@ -98,7 +100,7 @@ benötigt.
 <p>
 Die Verwaltung der Userdaten der Trainer und Abteilungen muss die APP Vereinsverwaltung installiert werden.
 Alternativ müssen die Daten in der Datenbank direkt eingetragen werden.
-<a href="https://github.com/kube-csc/vereinsverwaltung" target="_blank">zum GitHub Projekt Vereinsverwaltung ab V00.08.xx</a>
+<a href="https://github.com/kube-csc/vereinsverwaltung" target="_blank">zum GitHub Projekt Vereinsverwaltung ab V00.10.01</a>
 </p>
 
 <h4>Demodaten</h4>

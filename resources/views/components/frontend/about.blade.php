@@ -13,6 +13,9 @@
                          {!! $event->beschreibung !!}
                        @endif
                     </p>
+
+                    <a href="{{ route('pages.frontend.faq') }}" class="about-btn">FAQ<i class="bx bx-chevron-right"></i></a>
+
                     @if($event->email)
                        @if($event->anmeldetext)
                           <a href="/Ausschreibung" class="about-btn">Ausschreibung<i class="bx bx-chevron-right"></i></a>
@@ -54,9 +57,9 @@
                             @endif
                             <p>
                                 Wo:<br>
-                                {{ str_replace('_', ' ', env('VEREIN_NAME')) }}<br>
-                                {{ str_replace('_', ' ', env('VEREIN_STRASSE')) }}<br>
-                                {{ str_replace('_', ' ', env('VEREIN_PLZ')) }} {{ str_replace('_', ' ', env('VEREIN_ORT')) }}
+                                {{ (string) config('verein.name', '') }}<br>
+                                {{ (string) config('verein.strasse', '') }}<br>
+                                {{ trim((string) config('verein.plz', '') . ' ' . (string) config('verein.ort', '')) }}
                             </p>
                             @if($event->telefon)
                               <p>
@@ -126,9 +129,9 @@
                                                 @endif
                                                 @endif
                                                 @if( $eventDokumente->bild != NULL)
-                                                    <li><a href="{{env('VEREIN_CANONICAL')}}/storage/eventDokumente/{{ $eventDokumente->bild }}" target="_blank">{{ $eventDokumente->titel }}</a></li>
+                                                    <li><a href="{{ config('verein.canonical') }}/storage/eventDokumente/{{ $eventDokumente->bild }}" target="_blank">{{ $eventDokumente->titel }}</a></li>
                                                 @else
-                                                    <li><a href="{{env('VEREIN_CANONICAL')}}/daten/text/{{ $eventDokumente->image }}" target="_blank">{{ $eventDokumente->titel }}</a></li>
+                                                    <li><a href="{{ config('verein.canonical') }}/daten/text/{{ $eventDokumente->image }}" target="_blank">{{ $eventDokumente->titel }}</a></li>
                                                 @endif
                                                 @endforeach
                                             </ul>
@@ -153,6 +156,8 @@
 
     </div>
 </section><!-- End About Section -->
+
+{{-- FAQ wird nicht mehr direkt auf der About-Seite angezeigt. Nur Link/Button oben. --}}
 
 @if($event->email && $event->datumvona && $event->datumbisa)
     @if(now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&

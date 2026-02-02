@@ -5,15 +5,18 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Backend\RegattaTeamController;
 use App\Http\Controllers\Frontend\ImpressumController;
 use App\Http\Controllers\Frontend\DatenschutzerklaerungController;
+use App\Http\Controllers\Frontend\FaqController;
 use App\Http\Controllers\Api\APIController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/',                                   [HomeController::class, 'index'])->name('pages.frontend.home');
-Route::get('/Impressum',                          [ImpressumController::class, 'getImpressumDaten']);
+Route::get('/',                                                         [HomeController::class, 'index'])->name('pages.frontend.home');
+Route::get('/Impressum',                                        [ImpressumController::class, 'getImpressumDaten']);
 Route::get('/Information/Datenschutzerklaerung',  [DatenschutzerklaerungController::class, 'getDatenschutzerklaerungDaten']);
-Route::get('/Anfahrt',                            [HomeController::class, 'journey']);
-Route::get('/Ausschreibung',                      [HomeController::class, 'information']);
+Route::get('/Anfahrt',                                             [HomeController::class, 'journey']);
+Route::get('/Ausschreibung',                                 [HomeController::class, 'information']);
+Route::get('/faq',                                                    [FaqController::class, 'index'])->name('pages.frontend.faq');
+
 
 Route::get('/API/Gemeldeteteams',                   [APIController::class, 'APIStartliste'])->name('api.regattaTeams.APIStartliste');
 Route::get('/API/Sprecherkarten',                   [APIController::class, 'APISprecherkarte']);

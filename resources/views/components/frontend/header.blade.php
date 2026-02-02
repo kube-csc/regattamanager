@@ -19,6 +19,8 @@
                        <li><a href="/Ausschreibung">Ausschreibung</a></li>
                     @endif
 
+                    <li><a href="{{ route('pages.frontend.faq') }}">FAQ</a></li>
+
                     @if($event->datumvona &&
                         $event->datumbisa &&
                         now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&

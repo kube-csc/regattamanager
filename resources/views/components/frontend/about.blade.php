@@ -14,7 +14,9 @@
                        @endif
                     </p>
 
-                    <a href="{{ route('pages.frontend.faq') }}" class="about-btn">FAQ<i class="bx bx-chevron-right"></i></a>
+                    @if(!empty($event->has_faqs))
+                        <a href="{{ route('pages.frontend.faq') }}" class="about-btn">FAQ<i class="bx bx-chevron-right"></i></a>
+                    @endif
 
                     @if($event->email)
                        @if($event->anmeldetext)

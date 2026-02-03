@@ -19,7 +19,9 @@
                        <li><a href="/Ausschreibung">Ausschreibung</a></li>
                     @endif
 
-                    <li><a href="{{ route('pages.frontend.faq') }}">FAQ</a></li>
+                    @if(!empty($event->has_faqs))
+                        <li><a href="{{ route('pages.frontend.faq') }}">FAQ</a></li>
+                    @endif
 
                     @if($event->datumvona &&
                         $event->datumbisa &&

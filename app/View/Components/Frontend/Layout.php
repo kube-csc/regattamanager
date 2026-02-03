@@ -2,7 +2,7 @@
 
 namespace App\View\Components\Frontend;
 
-use App\Models\Event;
+use App\Http\Controllers\Controller as BaseController;
 use Illuminate\View\Component;
 
 class Layout extends Component
@@ -24,15 +24,10 @@ class Layout extends Component
      */
     public function render()
     {
-        $currentDomain = parse_url(url('/'), PHP_URL_HOST);
-        $currentDomain = str_replace('www.', '', $currentDomain);
+        // Event-Ermittlung inkl. FAQ-Flags erfolgt zentral im Controller
+        $event = new class extends BaseController {};
+        $event = $event->getEvent();
 
-        $event = Event::whereHas('eventGroup', function ($query) use ($currentDomain) {
-            $query->where('domain', $currentDomain);
-        })
-            ->orderBy('datumvon', 'desc')
-            ->first();
-
-            return view('layouts.frontend' , compact('event'));
+        return view('layouts.frontend', compact('event'));
     }
 }

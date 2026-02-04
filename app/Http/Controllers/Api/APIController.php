@@ -5,17 +5,53 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\RegattaTeam;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class APIController extends Controller
 {
-    // Hilfsfunktion im Controller ergänzen
+    /**
+     * Ersetzt unerwünschte Zeichen und gibt bei fehlendem Wert einen Leerstring zurück.
+     */
     private function cleanCsvField($value) {
-        return str_replace([";", "\r", "\n"], [",", "<br>", "<br>"], $value);
+        // Wenn kein Wert vorhanden ist, gib einen Leerstring zurück
+        if (empty($value) && $value !== "0") {
+            return " ";
+        }
+        return str_replace([ "<br>", "</p>","<p>"], [ "\n", "\n",""], $value);
+    }
+
+    /**
+     * Prüft, ob der übergebene Sicherheitscode gültig ist und (falls gesetzt) nicht abgelaufen ist.
+     *
+     * Annahme: `mitgliederSicherheitscodeEnddatum = null` bedeutet "läuft nicht ab".
+     */
+    private function isTeamdatenAccessAllowed($event, string $code): bool
+    {
+        $storedCode = (string) ($event->mitgliederSicherheitscode ?? '');
+        if ($storedCode === '' || !hash_equals($storedCode, (string) $code)) {
+            return false;
+        }
+
+        $end = $event->mitgliederSicherheitscodeEnddatum ?? null;
+        if (empty($end)) {
+            return true;
+        }
+
+        try {
+            // Unterstützt Carbon/DateTime, Strings und Timestamps
+            $endAt = $end instanceof \DateTimeInterface ? Carbon::instance($end) : Carbon::parse($end);
+        } catch (\Throwable $e) {
+            // Wenn das Datum kaputt/ungültig ist, sperren wir lieber.
+            return false;
+        }
+
+        return now()->lte($endAt);
     }
 
     public function APIStartliste()
     {
         $event = $this->getEvent();
+        abort_unless($event && $event->id != null, 404);
 
         if ($event->id != null) {
             $regattateams = RegattaTeam::where('regatta_id', $event->id)
@@ -55,8 +91,9 @@ class APIController extends Controller
     public function APITeamliste( $code )
     {
         $event = $this->getEvent();
+        abort_unless($event && $event->id != null, 404);
 
-        if (empty($event->mitgliederSicherheitscode == $code) || now()->gt($event->mitgliederSicherheitscodeEnddatum)) {
+        if (!$this->isTeamdatenAccessAllowed($event, (string) $code)) {
             abort(403, 'Bearbeitung nicht erlaubt.');
         }
 
@@ -105,6 +142,7 @@ class APIController extends Controller
     public function APISprecherkarte()
     {
         $event = $this->getEvent();
+        abort_unless($event && $event->id != null, 404);
 
         if ($event->id != null) {
             $regattateams = RegattaTeam::where('regatta_id', $event->id)

@@ -119,21 +119,27 @@
         </div>
         <div class="form-group">
             <label for="werbung">Wie haben Sie von uns erfahren:</label>
+            @php
+                $werbungOld = (string) old('werbung', '0');
+                if (in_array($werbungOld, ['3', '7'], true)) {
+                    $werbungOld = '0';
+                }
+            @endphp
             <select name="werbung" id="werbung" class="form-control" size="1" width="10">
-                <option value="0" selected>nicht ausgewählt</option>
-                <option value="1">kel-datteln.de Homepage</option>
-                <option value="2">Day of Dragons Homepage</option>
-                <option value="3">Kanucup-Datteln Homepage</option>
-                <option value="4">Plakatwerbung</option>
-                <option value="5">Flyer</option>
-                <option value="6">Empfehlung von Sportfreunden</option>
-                <option value="7">Radio</option>
-                <option value="8">Drachenboot-Liga</option>
-                <option value="9">Einladungsmail</option>
-                <option value="10">Presse</option>
-                <option value="12">dragonboat.online</option>
-                <option value="13">lokalkompass.de</option>
-                <option value="11">Sonstiges</option>
+                <option value="0" {{ $werbungOld === '0' ? 'selected' : '' }}>nicht ausgewählt</option>
+                <option value="1" {{ $werbungOld === '1' ? 'selected' : '' }}>kel-datteln.de Homepage</option>
+                <option value="2" {{ $werbungOld === '2' ? 'selected' : '' }}>Day of Dragons Homepage</option>
+                <option value="3" disabled>Kanucup-Datteln Homepage</option>
+                <option value="4" {{ $werbungOld === '4' ? 'selected' : '' }}>Plakatwerbung</option>
+                <option value="5" {{ $werbungOld === '5' ? 'selected' : '' }}>Flyer</option>
+                <option value="6" {{ $werbungOld === '6' ? 'selected' : '' }}>Empfehlung von Sportfreunden</option>
+                <option value="7" disabled>Radio</option>
+                <option value="8" {{ $werbungOld === '8' ? 'selected' : '' }}>Drachenboot-Liga</option>
+                <option value="9" {{ $werbungOld === '9' ? 'selected' : '' }}>Einladungsmail</option>
+                <option value="10" {{ $werbungOld === '10' ? 'selected' : '' }}>Presse</option>
+                <option value="12" {{ $werbungOld === '12' ? 'selected' : '' }}>dragonboat.online</option>
+                <option value="13" {{ $werbungOld === '13' ? 'selected' : '' }}>lokalkompass.de</option>
+                <option value="11" {{ $werbungOld === '11' ? 'selected' : '' }}>Sonstiges</option>
             </select>
         </div>
 

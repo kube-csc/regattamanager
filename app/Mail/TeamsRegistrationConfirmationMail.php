@@ -42,8 +42,25 @@ use Illuminate\Queue\SerializesModels;
     {
         $raceType = RaceType::find($this->regattateam->gruppe_id);
 
+        $teilnehmerLimit = (int) ($this->event->teilnehmer ?? 0);
+        $modus = (int) ($this->event->teilnehmermax ?? 0);
+
         if($this->regattateam->status == 'Warteliste'){
             $mailtext = 'ihr Team ' . $this->regattateam->teamname . ' wurde auf die Warteliste für ' . $this->event->ueberschrift . ' gesetzt.';
+
+            // Zusatzhinweis je Modus
+            if ($modus === 2) {
+                $mailtext .= '<br><br><b>Hinweis:</b> Das Event ist aktuell ausgebucht. Sobald ein Platz frei wird, melden wir uns bei dir.';
+            } elseif ($modus === 3) {
+                $bahnen = (int) ($raceType->bahnen ?? 0);
+                if ($bahnen > 0 && $teilnehmerLimit > 0) {
+                    $mailtext .= '<br><br><b>Hinweis:</b> In dieser Wertung werden Plätze in Blöcken (Vielfachen) von ' . $bahnen . ' Bahnen vergeben. Der aktuelle Block ist voll, daher Warteliste.';
+                } else {
+                    $mailtext .= '<br><br><b>Hinweis:</b> Das Team wurde aufgrund der aktuellen Kapazität auf die Warteliste gesetzt.';
+                }
+            } else {
+                $mailtext .= '<br><br><b>Hinweis:</b> Das Team wurde aufgrund der aktuellen Kapazität auf die Warteliste gesetzt.';
+            }
         }
         else{
             $mailtext = 'du hast das Team ' . $this->regattateam->teamname . ' für ' . $this->event->ueberschrift . ' gemeldet.';
@@ -61,7 +78,7 @@ use Illuminate\Queue\SerializesModels;
         $mailtext = $mailtext . '<li>Telefon: ' . $this->regattateam->telefon . '</li>';
         $mailtext = $mailtext . '<li>Email: ' . $this->regattateam->email . '</li>';
         $mailtext = $mailtext . '<li>Homepage: ' . $this->regattateam->homepage . '</li>';
-        $mailtext = $mailtext . '<li>Wertung: ' . $raceType->typ . '</li>';
+        $mailtext = $mailtext . '<li>Wertung: ' . ($raceType ? $raceType->typ : '') . '</li>';
         $mailtext = $mailtext . '<li>Beschreibung des Teams: ' . $this->regattateam->beschreibung . '</li>';
         $mailtext = $mailtext . '<li>Information an den Veranstalter: ' . $this->regattateam->kommentar . '</li>';
         $mailtext = $mailtext . '</ul>';

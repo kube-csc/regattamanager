@@ -10,6 +10,18 @@
             {{ session('notification') }}
         </div>
     @endif
+    @if(!empty($isEventFullyBooked) && $isEventFullyBooked)
+        <div class="alert alert-danger">
+            <strong>⚠️ Event ausgebucht!</strong><br>
+            Leider ist dieses Event bereits vollständig ausgebucht. Eine Meldung ist nicht mehr möglich.
+            Vielen Dank für dein Interesse!
+        </div>
+    @endif
+    @if(!empty($allWaitlist) && $allWaitlist)
+        <div class="alert alert-warning">
+            Alle weiteren Meldungen werden auf die Warteliste gesetzt.
+        </div>
+    @endif
     @if($event->teilnehmer < $regattaTeamCount && $event->teilnehmermax == '2')
         <div class="alert alert-warning">
             Wir müssen dir leider mitteilen, dass unser aktuelles Event bereits vollständig ausgebucht ist.
@@ -89,12 +101,31 @@
            <select name="gruppe_id" id="gruppe_id" class="form-control" required>
                <option value="0">Wertung / Klasse wählen</option>
                @foreach($raceTypes as $raceType)
-                   <option value="{{ $raceType->id }}" {{ old('gruppe_id') == $raceType->id ? 'selected' : '' }}>{{ $raceType->typ }}</option>
+                   @php
+                       $status = $raceTypeStatus[$raceType->id] ?? ['isWaitingList' => false, 'statusText' => '', 'isDisabled' => false];
+                       $displayText = $raceType->typ . $status['statusText'];
+                       $isDisabled = $status['isDisabled'];
+                   @endphp
+                   @if(!$isDisabled)
+                       {{-- Aktive Option: kann ausgewählt werden --}}
+                       <option value="{{ $raceType->id }}"
+                               data-is-waiting-list="{{ $status['isWaitingList'] ? '1' : '0' }}"
+                               data-status-text="{{ $status['statusText'] }}"
+                               {{ old('gruppe_id') == $raceType->id ? 'selected' : '' }}>
+                           {{ $displayText }}
+                       </option>
+                   @else
+                       {{-- Ausgeblendete Option (Modus 1): ausgebucht, keine Meldung möglich --}}
+                       {{-- <option value="{{ $raceType->id }}" disabled>{{ $displayText }}</option> --}}
+                   @endif
                @endforeach
            </select>
            @if($errors->has('gruppe_id'))
                <div class="alert alert-danger small" role="alert">{{ $errors->first('gruppe_id') }}</div>
            @endif
+           <div id="warteliste-hinweis" class="alert alert-warning small mt-2" style="display: none;">
+               <strong>Hinweis:</strong> Diese Wertung/Klasse ist aktuell voll. Ihre Meldung wird auf die Warteliste gesetzt.
+           </div>
         </div>
         <div class="form-group">
             <label for="Teamfoto">Teamfoto:</label>
@@ -129,11 +160,11 @@
                 <option value="0" {{ $werbungOld === '0' ? 'selected' : '' }}>nicht ausgewählt</option>
                 <option value="1" {{ $werbungOld === '1' ? 'selected' : '' }}>kel-datteln.de Homepage</option>
                 <option value="2" {{ $werbungOld === '2' ? 'selected' : '' }}>Day of Dragons Homepage</option>
-                <option value="3" disabled>Kanucup-Datteln Homepage</option>
+                {{-- <option value="3" disabled>Kanucup-Datteln Homepage</option> --}}
                 <option value="4" {{ $werbungOld === '4' ? 'selected' : '' }}>Plakatwerbung</option>
                 <option value="5" {{ $werbungOld === '5' ? 'selected' : '' }}>Flyer</option>
                 <option value="6" {{ $werbungOld === '6' ? 'selected' : '' }}>Empfehlung von Sportfreunden</option>
-                <option value="7" disabled>Radio</option>
+                {{-- <option value="7" disabled>Radio</option> --}}
                 <option value="8" {{ $werbungOld === '8' ? 'selected' : '' }}>Drachenboot-Liga</option>
                 <option value="9" {{ $werbungOld === '9' ? 'selected' : '' }}>Einladungsmail</option>
                 <option value="10" {{ $werbungOld === '10' ? 'selected' : '' }}>Presse</option>
@@ -182,3 +213,29 @@
         <br><br>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const gruppeSelect = document.getElementById('gruppe_id');
+    const wartelisteHinweis = document.getElementById('warteliste-hinweis');
+
+    if (gruppeSelect && wartelisteHinweis) {
+        gruppeSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const isWaitingList = selectedOption.getAttribute('data-is-waiting-list') === '1';
+
+            if (isWaitingList && this.value !== '0') {
+                wartelisteHinweis.style.display = 'block';
+            } else {
+                wartelisteHinweis.style.display = 'none';
+            }
+        });
+
+        // Trigger beim Laden, falls eine Option bereits ausgewählt ist (z.B. durch old())
+        if (gruppeSelect.value !== '0') {
+            gruppeSelect.dispatchEvent(new Event('change'));
+        }
+    }
+});
+</script>
+

@@ -5,7 +5,8 @@
 <main id="main">
 
    <p style="text-align: center;">
-         Unter der folgenden Domain {{parse_url(url('/'), PHP_URL_HOST)}} sind derzeit keine Veranstaltungen geplant.
+         Unter der Domain {{ parse_url(url('/'), PHP_URL_HOST) }} sind aktuell keine Veranstaltungen geplant.<br>
+         Prüfe bitte, ob die Domain in der Eventgruppe korrekt hinterlegt ist.
    </p>
     <p style="height: 10px;"></p>
 

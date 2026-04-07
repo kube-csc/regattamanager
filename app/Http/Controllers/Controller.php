@@ -23,6 +23,17 @@ abstract class Controller
             $event->ueberschrift = "Keine Veranstaltung gefunden";
             $event->id = null;
 
+            // Views erwarten teils diese Felder. Beim Fallback müssen sie vorhanden sein,
+            // sonst kommt es zu "Undefined property" Errors.
+            $event->anmeldetext = null;
+            $event->beschreibung = null;
+            $event->email = null;
+            $event->telefon = null;
+            $event->datumvon = null;
+            $event->datumbis = null;
+            $event->datumvona = null;
+            $event->datumbisa = null;
+
             // keine EventGroup/Event -> es kann keine passende FAQ geben
             $event->has_faqs = false;
             $event->has_faqs_event_id_null = false;

@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\RegattaTeamController;
 use App\Http\Controllers\Frontend\ImpressumController;
 use App\Http\Controllers\Frontend\DatenschutzerklaerungController;
 use App\Http\Controllers\Frontend\FaqController;
+use App\Http\Controllers\Frontend\PresentationController;
 use App\Http\Controllers\Api\APIController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,13 +26,15 @@ if (env('API_TEAMDATEN') === 'ja') {
     Route::get('/API/Teamdaten/{code}', [APIController::class, 'APITeamliste'])->name('api.regattaTeams.APITeamliste');
 }
 
-Route::get('/Teamemailmeldebestaetigung',         [TeamMailController::class, 'TeamMeldungMail'])->name('RegattaTeam.TeamMeldungMail');
+Route::get('/Teamemailmeldebestaetigung', [TeamMailController::class, 'TeamMeldungMail'])->name('RegattaTeam.TeamMeldungMail');
 
-Route::get('/Regattateams',                       [RegattaTeamController::class, 'index'])->name('RegattaTeam.index');
-Route::get('/Meldung',                            [RegattaTeamController::class, 'create'])->name('RegattaTeam.create');
-Route::post('/Meldung/eintragen',                 [RegattaTeamController::class, 'store'])->name('RegattaTeam.store');
+Route::get('/Regattateams',  [RegattaTeamController::class, 'index'])->name('RegattaTeam.index');
+Route::get('/Meldung',  [RegattaTeamController::class, 'create'])->name('RegattaTeam.create');
+Route::post('/Meldung/eintragen',  [RegattaTeamController::class, 'store'])->name('RegattaTeam.store');
 Route::get('/Meldung/Bestaetigung/{raceTeam_id}', [RegattaTeamController::class, 'show'])->name('RegattaTeam.show')
     ->middleware('check.meldung.session');
+
+Route::get('/Regattateam/Steckbrief/{id?}',  [PresentationController::class, 'teamProfile'])->name('RegattaTeam.steckbrief');
 
 Route::middleware([
     'auth:sanctum',

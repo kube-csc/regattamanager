@@ -49,7 +49,7 @@
                         @if($regattaTeam->status == 'Warteliste')
                             <p class="text-danger font-weight-bold">aktuell auf der Warteliste</p>
                         @endif
-                        <h4 class="title">{{ $regattaTeam->teamname }}</h4>
+                        <h4 class="title"><a href="{{ route('RegattaTeam.steckbrief', ['id' => $regattaTeam->id]) }}">{{ $regattaTeam->teamname }}</a></h4>
 
                         <ul class="description">
                             <li>Verein / Firma / Institution:<br>
@@ -68,9 +68,11 @@
                             </li>
                         </ul>
 
-                        <div>
+                        <div class="mb-3">
                             @if($regattaTeam->bild)
-                                <img src="{{ asset('storage/teamImage/' . $regattaTeam->bild) }}" alt="{{ $regattaTeam->teamname }}" class="img-fluid">
+                                <a href="{{ route('RegattaTeam.steckbrief', ['id' => $regattaTeam->id]) }}">
+                                    <img src="{{ asset('storage/teamImage/' . $regattaTeam->bild) }}" alt="{{ $regattaTeam->teamname }}" class="img-fluid">
+                                </a>
                             @endif
                         </div>
                     </div>

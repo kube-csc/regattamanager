@@ -76,13 +76,13 @@
                                 <div class="mb-4 text-center text-md-start">
                                     <div class="fs-4">
                                         <div class="d-flex align-items-baseline">
-                                            <div class="fw-bold text-right" style="min-width: 12.5rem;">Verein / Firma / Institution:</div>
+                                            <div class="font-weight-bold text-right" style="min-width: 12.5rem;">Verein / Firma / Institution:</div>
                                             <div class="text-primary ml-2">{{ $team->verein ?: '-' }}</div>
                                         </div>
 
                                         @if($team->homepage)
                                             <div class="d-flex align-items-baseline">
-                                                <div class="fw-bold text-right" style="min-width: 12.5rem;">Webseite:</div>
+                                                <div class="font-weight-bold text-right" style="min-width: 12.5rem;">Webseite:</div>
                                                 <div class="text-primary ml-2">
                                                     <a href="{{ $team->homepage }}" target="_blank" rel="noopener noreferrer">
                                                         <i class="icofont-link"></i>
@@ -99,27 +99,27 @@
                                     @endphp
                                     <div class="fs-4">
                                         <div class="d-flex align-items-baseline">
-                                            <div class="font-weight-bold text-right">Rennklasse:</div>
+                                            <div class="font-weight-bold text-right" style="min-width: 12.5rem;">Rennklasse:</div>
                                             <div class="text-secondary ml-2">{{ $rennklasse }}</div>
                                         </div>
 
                                         @if($rennklasse !== $bootsklasse)
                                             <div class="d-flex align-items-baseline">
-                                                <div class="font-weight-bold text-right">Bootsklasse:</div>
+                                                <div class="font-weight-bold text-right" style="min-width: 12.5rem;">Bootsklasse:</div>
                                                 <div class="text-secondary ml-2">{{ $bootsklasse }}</div>
                                             </div>
                                         @endif
 
                                         @if($team->ort)
                                             <div class="d-flex align-items-baseline">
-                                                <div class="font-weight-bold text-right">Ort:</div>
+                                                <div class="font-weight-bold text-right" style="min-width: 12.5rem;">Ort:</div>
                                                 <div class="text-secondary ml-2">{{ $team->ort }}</div>
                                             </div>
                                         @endif
 
                                         @if($participationCount > 0)
                                             <div class="d-flex align-items-baseline">
-                                                <div class="font-weight-bold text-right">Teilnahmen:</div>
+                                                <div class="font-weight-bold text-right" style="min-width: 12.5rem;">Teilnahmen:</div>
                                                 <div class="text-primary ml-2">{{ $participationCount }}</div>
                                             </div>
                                         @endif

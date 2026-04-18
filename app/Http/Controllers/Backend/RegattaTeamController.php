@@ -12,7 +12,13 @@ use App\Models\Event;
 use Str;
 
 /**
- * Es soll dei Warteliste Aktiviert werden <span>events->teilnehmer. Der Modus ist unter</span>events->teilnehmermax angeben. Wenn eine Meldung gemacht wird soll geprüft werden ob das team auf die Warteliste Kommt. Diese soll in regatta_teams->status angeben werden. Ein hinweis soll in der Mailbestätigung augegeben werden. Bei Teilnehmermax = keien Warteliste;  1 = maximale Teilnehmerzahl keine Meldung möglich keine Warteliste;  2 = maximale Teilnehmerzahl mit Warteliste;   3 = maximale Teilnehmerzahl mit Warteliste aber automatischer Bahnauffühlung Es konnen immer die Rennen aufgefüllt wird. Also ein vielfachen $race_types->bahnen.
+ * Es soll dei Warteliste Aktiviert werden <span>events->teilnehmer. Der Modus ist unter</span>events->teilnehmermax angeben.
+ * Wenn eine Meldung gemacht wird soll geprüft werden ob das team auf die Warteliste Kommt. Diese soll in regatta_teams->status angeben werden.
+ * Ein hinweis soll in der Mailbestätigung augegeben werden.  * Bei
+ * Teilnehmermax = keien Warteliste;
+ * 1 = maximale Teilnehmerzahl keine Meldung möglich keine Warteliste;
+ * 2 = maximale Teilnehmerzahl mit Warteliste;
+ * 3 = maximale Teilnehmerzahl mit Warteliste aber Bahnauffühlung. Es können immer die Rennen aufgefüllt wird. Also ein vielfachen $race_types->bahnen.
  *
  */
 
@@ -91,13 +97,25 @@ class RegattaTeamController extends Controller
         // Daten für die Meldungsseite
         $raceTypes = RaceType::where('regatta_id', $event->id)->get();
 
+        // Aktive Meldungen (ohne Warteliste/Gelöscht) – Event-weit
         $regattaTeamCount = RegattaTeam::where('regatta_id', $event->id)
             ->where('status', '!=', 'Gelöscht')
+            ->where('status', '!=', 'Warteliste')
             ->count();
 
         // Prüfe für jede Wertung/Klasse, ob sie voll ist (Warteliste-Status)
         $teilnehmerLimit = (int) ($event->teilnehmer ?? 0);
         $modus = (int) ($event->teilnehmermax ?? 0);
+
+        // Performance: aktive Teams je Gruppe in einem Query laden (für Modus 3)
+        $activeCountsPerGroup = RegattaTeam::where('regatta_id', $event->id)
+            ->where('status', '!=', 'Gelöscht')
+            ->where('status', '!=', 'Warteliste')
+            ->select('gruppe_id', \DB::raw('count(*) as total'))
+            ->groupBy('gruppe_id')
+            ->pluck('total', 'gruppe_id');
+
+        $activeCountEvent = (int) $regattaTeamCount;
 
         $raceTypeStatus = [];
 
@@ -112,53 +130,40 @@ class RegattaTeamController extends Controller
             }
             // Modus 1: hartes Limit ohne Warteliste - blockiert
             elseif ($modus === 1) {
-                $activeCount = RegattaTeam::where('regatta_id', $event->id)
-                    ->where('status', '!=', 'Gelöscht')
-                    ->where('status', '!=', 'Warteliste')
-                    ->count();
-
-                if ($teilnehmerLimit > 0 && $activeCount >= $teilnehmerLimit) {
+                if ($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit) {
                     $isDisabled = true; // Option wird ausgeblendet
                     $statusText = ' (Ausgebucht)';
                 }
             }
-            // Modus 2: mit Warteliste
+            // Modus 2: mit Warteliste (Event-weit)
             elseif ($modus === 2) {
-                $activeCount = RegattaTeam::where('regatta_id', $event->id)
-                    ->where('status', '!=', 'Gelöscht')
-                    ->where('status', '!=', 'Warteliste')
-                    ->count();
-
-                if ($teilnehmerLimit > 0 && $activeCount >= $teilnehmerLimit) {
-                    $isWaitingList = true;
-                    $statusText = ' (Meldung nur auf Warteliste)';
-                } elseif ($teilnehmerLimit === 0) {
+                if ($teilnehmerLimit === 0 || ($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit)) {
                     $isWaitingList = true;
                     $statusText = ' (Meldung nur auf Warteliste)';
                 }
             }
-            // Modus 3: mit Warteliste und Bahnauffüllung pro Wertung
+            // Modus 3: Event-weites Limit; erst AB Event-Limit blockweise pro Wertung/Klasse (Vielfaches von Bahnen)
             elseif ($modus === 3) {
-                $activeCount = RegattaTeam::where('regatta_id', $event->id)
-                    ->where('gruppe_id', $raceType->id)
-                    ->where('status', '!=', 'Gelöscht')
-                    ->where('status', '!=', 'Warteliste')
-                    ->count();
-
-                $bahnen = (int) ($raceType->bahnen ?? 0);
-
-                if ($bahnen <= 0) {
-                    // Fallback wie Modus 2
-                    if ($teilnehmerLimit === 0 || ($teilnehmerLimit > 0 && $activeCount >= $teilnehmerLimit)) {
-                        $isWaitingList = true;
-                        $statusText = ' (Meldung nur auf Warteliste)';
-                    }
+                // Solange Event-Limit NICHT erreicht: in allen Klassen normale Meldung
+                if ($teilnehmerLimit > 0 && $activeCountEvent < $teilnehmerLimit) {
+                    $isWaitingList = false;
                 } else {
-                    // Wenn aktive Teams pro Klasse >= bahnen, dann Warteliste
-                    // Beispiel: bahnen=4, activeCount=4 => Warteliste
-                    if ($activeCount >= $bahnen) {
+                    // Event-Limit erreicht (oder Limit==0): pro Klasse blockweise prüfen
+                    $bahnen = (int) ($raceType->bahnen ?? 0);
+
+                    if ($bahnen <= 0) {
+                        // Fallback: sobald Event-Limit erreicht -> Warteliste
                         $isWaitingList = true;
                         $statusText = ' (Meldung nur auf Warteliste)';
+                    } else {
+                        $activeCountGroup = (int) ($activeCountsPerGroup[$raceType->id] ?? 0);
+
+                        // Warteliste genau dann, wenn aktueller Block voll ist (Vielfaches von bahnen)
+                        // Beispiel bahnen=4: active=4,8,12... => Warteliste
+                        if ($activeCountGroup > 0 && ($activeCountGroup % $bahnen) === 0) {
+                            $isWaitingList = true;
+                            $statusText = ' (Meldung nur auf Warteliste)';
+                        }
                     }
                 }
             }
@@ -166,7 +171,7 @@ class RegattaTeamController extends Controller
             $raceTypeStatus[$raceType->id] = [
                 'isWaitingList' => $isWaitingList,
                 'statusText' => $statusText,
-                'isDisabled' => $isDisabled
+                'isDisabled' => $isDisabled,
             ];
         }
 
@@ -175,25 +180,21 @@ class RegattaTeamController extends Controller
         $isEventFullyBooked = false;
 
         if ($modus === 1) {
-            // Modus 1: Wenn Event voll ist
-            $activeCount = RegattaTeam::where('regatta_id', $event->id)
-                ->where('status', '!=', 'Gelöscht')
-                ->where('status', '!=', 'Warteliste')
-                ->count();
-            $isEventFullyBooked = ($teilnehmerLimit > 0 && $activeCount >= $teilnehmerLimit);
+            $isEventFullyBooked = ($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit);
         } elseif ($modus === 2) {
-            $activeCount = RegattaTeam::where('regatta_id', $event->id)
-                ->where('status', '!=', 'Gelöscht')
-                ->where('status', '!=', 'Warteliste')
-                ->count();
-            $allWaitlist = ($teilnehmerLimit === 0) || ($teilnehmerLimit > 0 && $activeCount >= $teilnehmerLimit);
+            $allWaitlist = ($teilnehmerLimit === 0) || ($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit);
         } elseif ($modus === 3) {
-            $allWaitlist = !empty($raceTypeStatus);
-            foreach ($raceTypeStatus as $status) {
-                if (empty($status['isWaitingList'])) {
-                    $allWaitlist = false;
-                    break;
+            // In Modus 3 ist ein globaler "alles Warteliste" Hinweis nur sinnvoll, wenn das Event-Limit erreicht ist.
+            if (($teilnehmerLimit === 0) || ($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit)) {
+                $allWaitlist = !empty($raceTypeStatus);
+                foreach ($raceTypeStatus as $status) {
+                    if (empty($status['isWaitingList'])) {
+                        $allWaitlist = false;
+                        break;
+                    }
                 }
+            } else {
+                $allWaitlist = false;
             }
         }
 
@@ -249,58 +250,48 @@ class RegattaTeamController extends Controller
         $modus = (int) ($event->teilnehmermax ?? 0);
 
         // Für die Kapazität zählen nur "aktive" Teams (Warteliste zählt nicht gegen das Limit)
-        $activeCountQuery = RegattaTeam::where('regatta_id', $event->id)
+        $activeBaseQuery = RegattaTeam::where('regatta_id', $event->id)
             ->where('status', '!=', 'Gelöscht')
             ->where('status', '!=', 'Warteliste');
 
-        // Modus 3: Kapazität in Bahn-Blöcken pro Wertung/Klasse (gruppe_id)
-        if ($modus === 3) {
-            $activeCountQuery->where('gruppe_id', $request->gruppe_id);
-        }
-
-        $activeCount = (int) $activeCountQuery->count();
+        $activeCountEvent = (int) (clone $activeBaseQuery)->count();
+        $activeCountGroup = (int) (clone $activeBaseQuery)->where('gruppe_id', $request->gruppe_id)->count();
 
         $status = 'Neuanmeldung';
 
         // Entscheidungen gemäß Modus
         if ($modus === 0) {
-            // unbegrenzt
             $status = 'Neuanmeldung';
         } elseif ($modus === 1) {
-            // hartes Limit, keine Warteliste
-            if ($teilnehmerLimit > 0 && $activeCount >= $teilnehmerLimit) {
+            if (($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit) || $teilnehmerLimit === 0) {
                 return back()->with(['notification' => 'Dieses Event ist leider ausgebucht. Eine Meldung ist nicht mehr möglich.']);
             }
-            if ($teilnehmerLimit === 0) {
-                // Limit 0 in Modus 1 bedeutet effektiv: keine Plätze
-                return back()->with(['notification' => 'Für dieses Event sind aktuell keine Plätze verfügbar.']);
-            }
         } elseif ($modus === 2) {
-            // Limit + Warteliste
-            if ($teilnehmerLimit > 0 && $activeCount >= $teilnehmerLimit) {
-                $status = 'Warteliste';
-            }
-            if ($teilnehmerLimit === 0) {
-                // Limit 0 => direkt Warteliste
+            if ($teilnehmerLimit === 0 || ($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit)) {
                 $status = 'Warteliste';
             }
         } elseif ($modus === 3) {
-            // Limit + Warteliste + automatische Bahnauffüllung (pro Gruppe/Klasse)
-            if (! $raceType) {
-                // Ohne RaceType keine Bahnlogik möglich -> sichere Variante: Warteliste
-                $status = 'Warteliste';
-            } else {
-                $bahnen = (int) ($raceType->bahnen ?? 0);
+            // Soll-Logik Modus 3:
+            // 1) Solange Event-Limit nicht erreicht: normale Meldung in allen Klassen
+            // 2) Ab Event-Limit: pro Klasse blockweise (Vielfaches von bahnen) -> Warteliste
 
-                if ($bahnen <= 0) {
-                    // Fallback wie Modus 2
-                    if ($teilnehmerLimit === 0 || ($teilnehmerLimit > 0 && $activeCount >= $teilnehmerLimit)) {
-                        $status = 'Warteliste';
-                    }
+            if ($teilnehmerLimit > 0 && $activeCountEvent < $teilnehmerLimit) {
+                $status = 'Neuanmeldung';
+            } else {
+                // Event-Limit erreicht (oder Limit==0)
+                if (! $raceType) {
+                    $status = 'Warteliste';
                 } else {
-                    // Wenn aktive Teams pro Klasse >= bahnen, dann Warteliste
-                    if ($activeCount >= $bahnen) {
+                    $bahnen = (int) ($raceType->bahnen ?? 0);
+
+                    if ($bahnen <= 0) {
+                        // Fallback: ab Event-Limit Warteliste
                         $status = 'Warteliste';
+                    } else {
+                        // Warteliste genau dann, wenn Block voll ist
+                        if ($activeCountGroup > 0 && ($activeCountGroup % $bahnen) === 0) {
+                            $status = 'Warteliste';
+                        }
                     }
                 }
             }
@@ -328,16 +319,16 @@ class RegattaTeamController extends Controller
             'werbung' => $request->werbung,
             'training' => $raceType ? $raceType->training : null,
             'teamlink' => 0, //ToDo: Teamlink ermitteln
-            'passwort' => Str::random(10), //ToDo: Passwort ermitteln
+            'passwort' => Str::random(10),
             'status' => $status,
             'mannschaftsmail' => 'M',
             'einverstaendnis' => $einverstaendnis
         ]);
 
-        if($request->Teamfoto) {
-           $extension = $request->Teamfoto->extension();
-           $newPictureName = $this->saveInmage($request->Teamfoto, $regattaTeam->id, $extension);
-           $regattaTeam->update(['bild' => $newPictureName]);
+        if ($request->Teamfoto) {
+            $extension = $request->Teamfoto->extension();
+            $newPictureName = $this->saveInmage($request->Teamfoto, $regattaTeam->id, $extension);
+            $regattaTeam->update(['bild' => $newPictureName]);
         }
 
         // Erstelle eine Instanz des TeamMailController
@@ -345,7 +336,7 @@ class RegattaTeamController extends Controller
         // Rufe die TeamMeldungMail Methode auf
         $teamMailController->TeamMeldungMail();
 
-        return redirect('/Meldung/Bestaetigung/'.$regattaTeam->id);
+        return redirect('/Meldung/Bestaetigung/' . $regattaTeam->id);
     }
 
     /**

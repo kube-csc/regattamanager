@@ -100,20 +100,20 @@
                                     <div class="fs-4">
                                         <div class="d-flex align-items-baseline">
                                             <div class="font-weight-bold text-right" style="min-width: 12.5rem;">Rennklasse:</div>
-                                            <div class="text-secondary ml-2">{{ $rennklasse }}</div>
+                                            <div class="text-primary ml-2">{{ $rennklasse }}</div>
                                         </div>
 
                                         @if($rennklasse !== $bootsklasse)
                                             <div class="d-flex align-items-baseline">
                                                 <div class="font-weight-bold text-right" style="min-width: 12.5rem;">Bootsklasse:</div>
-                                                <div class="text-secondary ml-2">{{ $bootsklasse }}</div>
+                                                <div class="text-primary ml-2">{{ $bootsklasse }}</div>
                                             </div>
                                         @endif
 
                                         @if($team->ort)
                                             <div class="d-flex align-items-baseline">
                                                 <div class="font-weight-bold text-right" style="min-width: 12.5rem;">Ort:</div>
-                                                <div class="text-secondary ml-2">{{ $team->ort }}</div>
+                                                <div class="text-primary ml-2">{{ $team->ort }}</div>
                                             </div>
                                         @endif
 
@@ -125,8 +125,11 @@
                                         @endif
                                     </div>
                                 </div>
-
+                                @php
+                                 /*
                                 {{-- Beschreibung (temporär ausgeblendet)
+                                Aktuell ist noch nicht entschieden, ob die Beschreibung dauerhaft angezeigt werden soll.
+                                Eine dauerhaft öffentliche Anzeige von Team-Informationen ist aus Datenschutzgründen kritisch und muss ggf. abgestimmt werden.
                                 @if($team->beschreibung)
                                     <div class="mb-4">
                                         <h4 class="border-bottom pb-2">Beschreibung</h4>
@@ -134,7 +137,8 @@
                                     </div>
                                 @endif
                                 --}}
-
+                                */
+                                @endphp
                                 @if($lastResults->count() > 0)
                                     <div class="mt-auto">
                                         <h4 class="border-bottom pb-2">Letzte Erfolge</h4>

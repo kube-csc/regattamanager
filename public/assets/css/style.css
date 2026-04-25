@@ -2067,3 +2067,25 @@ todo: Blaue Farbe anpassen
     color: white;
     font-size: 14px;
 }
+
+/*--------------------------------------------------------------
+# Steckbrief / Team-Profil
+--------------------------------------------------------------*/
+/* Auf kleinen & mittleren Screens (z.B. Handy, 2 Handys nebeneinander, kleine Tablets)
+   sollen Label und Wert untereinander stehen. Erst ab "lg" wieder zweispaltig. */
+@media (max-width: 991.98px) {
+    .team-detail-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    .team-detail-label {
+        min-width: 0 !important;
+        text-align: left !important;
+    }
+
+    .team-detail-value {
+        margin-left: 0 !important;
+    }
+}
+

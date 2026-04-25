@@ -70,6 +70,12 @@ benötigt.
   <li><b>Sprecherkarten (CSV)</b>
     <ul>
       <li><b>URL</b>: /API/Sprecherkarten</li>
+      <li><b>Option (Erfolge-Filter)</b>: Standardmäßig werden nur Finale berücksichtigt.
+        <ul>
+          <li><b>nur Finale</b>: /API/Sprecherkarten?finale=1</li>
+          <li><b>alle Ergebnisse</b> (Finale + Nicht‑Finale): /API/Sprecherkarten?finale=0</li>
+        </ul>
+      </li>
       <li><b>Response</b>: CSV-Download (Dateiname: Sprecherkarte.csv)</li>
       <li><b>Format</b>:
         <ul>

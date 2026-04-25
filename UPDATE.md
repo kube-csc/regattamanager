@@ -8,6 +8,9 @@
 - Sprecherkarten-CSV (Sprecherkarten-Export):
   - Spalte **"Teilnahmen"**: Anzahl vergangener Teilnahmen (wie im Mannschaftssteckbrief).
   - Spalte **"Erfolge"**: letzte Final-Ergebnisse aus früheren Veranstaltungen (aktuelle Regatta wird nicht berücksichtigt), mehrzeilig formatiert als: Platz X – Rennenbezeichnung – dd.mm.YYYY.
+  - Optional kann der Erfolgs-Filter beim Export gesteuert werden:
+    - nur Finale: /API/Sprecherkarten?finale=1
+    - alle Ergebnisse (Finale + Nicht‑Finale): /API/Sprecherkarten?finale=0
 
 ***Wichtige Hinweise (Migration)***
 - Migrationen ergänzt/angepasst, damit die Datenbank-Struktur wieder konsistent ist (u.a. Sportarten-Bereich und Textfelder).

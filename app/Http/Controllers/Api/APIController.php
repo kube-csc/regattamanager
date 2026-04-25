@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Lane;
 use App\Models\RegattaTeam;
+use App\Services\RegattaTeamHistoryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 class APIController extends Controller
 {
+    public function __construct(
+        private readonly RegattaTeamHistoryService $historyService
+    ) {
+    }
+
     /**
      * Ersetzt unerwünschte Zeichen und gibt bei fehlendem Wert einen Leerstring zurück.
      */
@@ -140,7 +144,7 @@ class APIController extends Controller
         }
     }
 
-    public function APISprecherkarte()
+    public function APISprecherkarte(Request $request)
     {
         $event = $this->getEvent();
         abort_unless($event && $event->id != null, 404);
@@ -166,80 +170,17 @@ class APIController extends Controller
             $participationCountByTeamlink = collect();
             $lastResultsTextByTeamlink = collect();
 
+            // Optional: Finale-Filter steuerbar (default: nur Finale wie im Steckbrief)
+            $finaleOnly = $request->boolean('finale', true);
+
             if ($teamLinks->isNotEmpty()) {
-                $participationBaseQuery = RegattaTeam::join('events', 'regatta_teams.regatta_id', '=', 'events.id')
-                    ->whereIn('regatta_teams.teamlink', $teamLinks)
-                    ->where('regatta_teams.status', 'Neuanmeldung')
-                    // Vergangene Teilnahmen zählen wir über das Veranstaltungs-Enddatum (nicht Anmeldezeitraum).
-                    ->where('events.datumbis', '<', now()->format('Y-m-d'))
-                    // Aktuelle Regatta (aktuelles Event) soll bei "Teilnahmen"/"Erfolge" nicht mitgezählt werden.
-                    ->where('events.id', '!=', (int) $event->id);
-
-                // Mapping: team_id => teamlink (für spätere Zuordnung der Ergebnisse)
-                $teamIdToTeamlink = (clone $participationBaseQuery)
-                    ->select('regatta_teams.id as team_id', 'regatta_teams.teamlink')
-                    ->get()
-                    ->mapWithKeys(fn ($row) => [(int) $row->team_id => (int) $row->teamlink]);
-
-                $participationCountByTeamlink = $teamIdToTeamlink
-                    ->values()
-                    ->countBy();
-
-                $teamIds = $teamIdToTeamlink->keys();
-
-                if ($teamIds->isNotEmpty()) {
-                    $lanes = Lane::whereIn('mannschaft_id', $teamIds)
-                        ->whereHas('race', function ($q) use ($event) {
-                            $q->where('status', 4)
-                                ->where('visible', 1)
-                                // Aktuelle Regatta (aktuelles Event) soll bei "Erfolge" nicht berücksichtigt werden.
-                                ->where('event_id', '!=', (int) $event->id)
-                                ->whereHas('raceTabele', function ($q2) {
-                                    $q2->where('finale', 1);
-                                })
-                                ->where(function ($query) {
-                                    $today = now()->format('Y-m-d');
-                                    $now = now()->format('H:i:s');
-                                    $query->where('rennDatum', '<', $today)
-                                        ->orWhere(function ($q2) use ($today, $now) {
-                                            $q2->where('rennDatum', $today)
-                                                ->where('veroeffentlichungUhrzeit', '<=', $now);
-                                        });
-                                });
-                        })
-                        ->with('race')
-                        ->get();
-
-                    // Pro Teamlink: letztes Ergebnis je Event (wie im Steckbrief)
-                    $lastResultsTextByTeamlink = $lanes
-                        ->filter(function ($lane) use ($teamIdToTeamlink) {
-                            return isset($teamIdToTeamlink[(int) $lane->mannschaft_id]);
-                        })
-                        ->sortByDesc(function ($lane) {
-                            return ($lane->race?->rennDatum ?? '0000-00-00') . ' ' . ($lane->race?->rennUhrzeit ?? '00:00:00');
-                        })
-                        ->filter(function ($lane) {
-                            return $lane->race && $lane->race->event_id;
-                        })
-                        ->groupBy(function ($lane) use ($teamIdToTeamlink) {
-                            return (int) $teamIdToTeamlink[(int) $lane->mannschaft_id];
-                        })
-                        ->map(function ($lanesPerTeamlink) {
-                            $perEvent = $lanesPerTeamlink
-                                ->groupBy(fn ($lane) => (int) $lane->race->event_id)
-                                ->map(fn ($lanesPerEvent) => $lanesPerEvent->first())
-                                ->values();
-
-                            return $perEvent
-                                ->map(function ($res) {
-                                    $platz = $res->platz ?? '-';
-                                    $rennen = $res->race->rennBezeichnung ?? 'Rennen';
-                                    $datum = $res->race->rennDatum ? Carbon::parse($res->race->rennDatum)->format('d.m.Y') : '-';
-                                    return "Platz {$platz} – {$rennen} – {$datum}";
-                                })
-                                ->implode("\n");
-                        });
-                }
+                $teamIdToTeamlink = $this->historyService->getPastTeamIdToTeamlink($teamLinks, (int) $event->id);
+                $participationCountByTeamlink = $teamIdToTeamlink->values()->countBy();
+                $lastResultsTextByTeamlink = $this->historyService->getLastResultsTextByTeamIdToTeamlink(
+                    $teamIdToTeamlink,
+                    (int) $event->id,
+                    $finaleOnly
+                );
             }
 
             $headers = [

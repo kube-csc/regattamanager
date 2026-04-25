@@ -56,14 +56,68 @@ benötigt.
     <li>Anfahrt **</li>
     <li>Footer
       <ul> 
-        <li>Impresssum</li>
+        <li>Impressum</li>
         <li>Datenschutzerklärung</li>
       </ul>
       </li>
 </ul>
 
-* Begriff wird in der .env eintragen  
+* Begriff wird in der .env eingetragen  
   ** Anfahrt kann in der .env aktiviert bzw. deaktiviert werden
+
+<h2>API</h2>
+<ul>
+  <li><b>Sprecherkarten (CSV)</b>
+    <ul>
+      <li><b>URL</b>: /API/Sprecherkarten</li>
+      <li><b>Response</b>: CSV-Download (Dateiname: Sprecherkarte.csv)</li>
+      <li><b>Format</b>:
+        <ul>
+          <li>Trennzeichen: ;</li>
+          <li>Encoding: UTF-8 (Excel-kompatibel)</li>
+          <li>Zeilenumbrüche innerhalb von Feldern (z.B. in <b>Erfolge</b>) werden als echte Newlines ausgegeben.</li>
+        </ul>
+      </li>
+      <li><b>Welche Teams werden exportiert?</b>
+        <ul>
+          <li>Alle gemeldeten Teams der <b>aktuellen Veranstaltung</b> (die Veranstaltung wird über die aktuelle Domain ermittelt).</li>
+          <li>Wenn für die Domain keine Veranstaltung gefunden wird, wird eine Fehlermeldung zurückgegeben.</li>
+        </ul>
+      </li>
+      <li><b>CSV-Spalten</b> (Header-Zeile):
+        <ul>
+          <li><b>Nr.</b>: laufende Nummer im Export</li>
+          <li><b>Datum</b>: Anmeldedatum (Format dd.mm.YYYY)</li>
+          <li><b>Teamname</b></li>
+          <li><b>Verein / Firma</b></li>
+          <li><b>Ort</b></li>
+          <li><b>Wertung</b>: Rennklasse / Wertungsgruppe</li>
+          <li><b>Teambeschreibung</b>: Teamtext (Zeilenumbrüche werden in der CSV übernommen)</li>
+          <li><b>Teilnahmen</b></li>
+          <li><b>Erfolge</b></li>
+        </ul>
+      </li>
+      <li><b>Zusatzfelder</b> – analog zum Regatta‑Team‑Steckbrief:
+        <ul>
+          <li>
+            <b>Teilnahmen</b>: Anzahl vergangener Teilnahmen des Teams (frühere Veranstaltungen).
+          </li>
+          <li>
+            <b>Erfolge</b>: letzte Final-Ergebnisse, mehrzeilig formatiert als:<br>
+            Platz X – Rennenbezeichnung – dd.mm.YYYY
+            <ul>
+              <li>es werden nur Finale berücksichtigt</li>
+              <li>es werden nur veröffentlichte/abgeschlossene Ergebnisse berücksichtigt</li>
+              <li>die <b>aktuelle Regatta</b> wird dabei nicht berücksichtigt</li>
+              <li>pro früherer Veranstaltung wird das jeweils letzte Ergebnis ausgegeben (wie im Steckbrief)</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><b>Hinweis</b>: Die Felder <b>Teilnahmen</b> und <b>Erfolge</b> werden nur berechnet, wenn das Team über mehrere Veranstaltungen eindeutig wiedererkannt werden kann.</li>
+    </ul>
+  </li>
+</ul>
 
 <h2>Installation</h2>
 <ul>
@@ -78,7 +132,7 @@ benötigt.
          <li>boardPortrait</li>
        </ul>
    </li>
-   <li>in Ordner "/recources/views/textimport ist folgendes zu Bearbeiten:
+   <li>In Ordner "/recources/views/textimport ist folgendes zu Bearbeiten:
    <ul>
      <li>cssColor.blade.php anlegen und mit der Vorlage von cssColor_example.blade.php ausfüllen</li>
      <li>recht.blade.php anlegen und mit der Vorlage von recht_example.blade.php ausfüllen</li>

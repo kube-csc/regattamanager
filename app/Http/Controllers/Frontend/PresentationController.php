@@ -70,14 +70,15 @@ class PresentationController extends Controller
                 ->where('regatta_teams.teamlink', $team->teamlink)
                 ->whereNotNull('regatta_teams.bild')
                 ->where('regatta_teams.bild', '!=', '')
-                ->where('events.datumbisa', '<', $event->datumbisa ?? now()->format('Y-m-d'))
-                ->orderBy('events.datumbisa', 'desc')
-                ->select('regatta_teams.bild', 'events.datumbisa')
+                // Für historische Auswahl zählt das Veranstaltungs-Enddatum (datumbis), nicht der Anmeldezeitraum (datumbisa).
+                ->where('events.datumbis', '<', $event->datumbis ?? now()->format('Y-m-d'))
+                ->orderBy('events.datumbis', 'desc')
+                ->select('regatta_teams.bild', 'events.datumbis')
                 ->first();
 
             if ($fallbackTeam) {
                 $team->bild = $fallbackTeam->bild;
-                $fallbackYear = \Carbon\Carbon::parse($fallbackTeam->datumbisa)->year;
+                $fallbackYear = \Carbon\Carbon::parse($fallbackTeam->datumbis)->year;
             }
         }
 
@@ -89,7 +90,10 @@ class PresentationController extends Controller
             $participationBaseQuery = RegattaTeam::join('events', 'regatta_teams.regatta_id', '=', 'events.id')
                 ->where('regatta_teams.teamlink', $team->teamlink)
                 ->where('regatta_teams.status', 'Neuanmeldung')
-                ->where('events.datumbisa', '<', now()->format('Y-m-d'));
+                // Vergangene Teilnahmen zählen wir über das Veranstaltungs-Enddatum (datumbis), nicht Anmeldezeitraum (datumbisa).
+                ->where('events.datumbis', '<', now()->format('Y-m-d'))
+                // Aktuelle Regatta soll in der Historie nicht mitgezählt werden.
+                ->where('events.id', '!=', (int) $eventId);
 
             $teamIds = (clone $participationBaseQuery)
                 ->select('regatta_teams.id as team_id')
@@ -101,9 +105,11 @@ class PresentationController extends Controller
 
             if ($teamIds->isNotEmpty()) {
                 $lastResults = Lane::whereIn('mannschaft_id', $teamIds)
-                    ->whereHas('race', function ($q) {
+                    ->whereHas('race', function ($q) use ($eventId) {
                         $q->where('status', 4)
                               ->where('visible', 1)
+                              // Aktuelle Regatta (aktuelles Event) soll bei Erfolgen nicht berücksichtigt werden.
+                              ->where('event_id', '!=', (int) $eventId)
                               ->whereHas('raceTabele', function ($q2) {
                                   $q2->where('finale', 1);
                               })

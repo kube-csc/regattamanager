@@ -26,6 +26,7 @@
             :fallback-year="$fallbackYear"
             :prev-team-url="$prevTeamUrl"
             :next-team-url="$nextTeamUrl"
+            :finale-only="$finaleOnly"
         />
     @else
         <div class="alert alert-warning">Keine Mannschaften vorhanden.</div>

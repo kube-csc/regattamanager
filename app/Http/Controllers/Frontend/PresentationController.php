@@ -68,8 +68,9 @@ class PresentationController extends Controller
         $prevTeamIndex = ($teamIndex - 1 + $teamCount) % $teamCount;
         $nextTeamIndex = ($teamIndex + 1) % $teamCount;
 
-        $prevTeamUrl = route('RegattaTeam.steckbrief', ['team' => $prevTeamIndex]);
-        $nextTeamUrl = route('RegattaTeam.steckbrief', ['team' => $nextTeamIndex]);
+        // Finale-Filter beim Blättern beibehalten
+        $prevTeamUrl = route('RegattaTeam.steckbrief', ['team' => $prevTeamIndex, 'finale' => $finaleOnly ? 1 : 0]);
+        $nextTeamUrl = route('RegattaTeam.steckbrief', ['team' => $nextTeamIndex, 'finale' => $finaleOnly ? 1 : 0]);
 
         // Fallback für Teambild
         $fallbackYear = null;
@@ -111,6 +112,7 @@ class PresentationController extends Controller
             'teamCount' => $teamCount,
             'prevTeamUrl' => $prevTeamUrl,
             'nextTeamUrl' => $nextTeamUrl,
+            'finaleOnly' => $finaleOnly,
             'event' => $event,
             'participationCount' => $participationCount,
             'lastResults' => $lastResults,

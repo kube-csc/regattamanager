@@ -92,13 +92,13 @@
                                 <div class="mb-4 text-center text-md-start">
                                     <div class="fs-4">
                                         <div class="d-flex align-items-baseline team-detail-row">
-                                            <div class="font-weight-bold text-right team-detail-label" style="min-width: 12.5rem;">Verein / Firma / Institution:</div>
+                                            <div class="font-weight-bold text-right team-detail-label">Verein / Firma / Institution:</div>
                                             <div class="text-primary ml-2 team-detail-value">{{ $team->verein ?: '-' }}</div>
                                         </div>
 
                                         @if($team->homepage)
                                             <div class="d-flex align-items-baseline team-detail-row">
-                                                <div class="font-weight-bold text-right team-detail-label" style="min-width: 12.5rem;">Webseite:</div>
+                                                <div class="font-weight-bold text-right team-detail-label">Webseite:</div>
                                                 <div class="text-primary ml-2 team-detail-value">
                                                     <a href="{{ $team->homepage }}" target="_blank" rel="noopener noreferrer">
                                                         <i class="icofont-link"></i>
@@ -115,27 +115,27 @@
                                     @endphp
                                     <div class="fs-4">
                                         <div class="d-flex align-items-baseline team-detail-row">
-                                            <div class="font-weight-bold text-right team-detail-label" style="min-width: 12.5rem;">Rennklasse:</div>
+                                            <div class="font-weight-bold text-right team-detail-label">Rennklasse:</div>
                                             <div class="text-primary ml-2 team-detail-value">{{ $rennklasse }}</div>
                                         </div>
 
                                         @if($rennklasse !== $bootsklasse)
                                             <div class="d-flex align-items-baseline team-detail-row">
-                                                <div class="font-weight-bold text-right team-detail-label" style="min-width: 12.5rem;">Bootsklasse:</div>
+                                                <div class="font-weight-bold text-right team-detail-label">Bootsklasse:</div>
                                                 <div class="text-primary ml-2 team-detail-value">{{ $bootsklasse }}</div>
                                             </div>
                                         @endif
 
                                         @if($team->ort)
                                             <div class="d-flex align-items-baseline team-detail-row">
-                                                <div class="font-weight-bold text-right team-detail-label" style="min-width: 12.5rem;">Ort:</div>
+                                                <div class="font-weight-bold text-right team-detail-label">Ort:</div>
                                                 <div class="text-primary ml-2 team-detail-value">{{ $team->ort }}</div>
                                             </div>
                                         @endif
 
                                         @if($participationCount > 0)
                                             <div class="d-flex align-items-baseline team-detail-row">
-                                                <div class="font-weight-bold text-right team-detail-label" style="min-width: 12.5rem;">Teilnahmen:</div>
+                                                <div class="font-weight-bold text-right team-detail-label">Teilnahmen:</div>
                                                 <div class="text-primary ml-2 team-detail-value">{{ $participationCount }}</div>
                                             </div>
                                         @endif

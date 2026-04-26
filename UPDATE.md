@@ -5,6 +5,12 @@
 ***Neue Funktionen***
 - Warteliste für Team-Meldungen (Status "Warteliste" inkl. Anzeige im Frontend).
 - Mannschaftssteckbrief / Team-Profil-Ansicht (Blätter-Navigation über gemeldete Teams, Detailansicht inkl. Erfolgen/Teilnahmen).
+- Domainabhängiges Frontend-Branding (Header/Hero) über event_groups:
+  - Auswahl nach domain (ohne „www.“) und visible = 1 (neuester Eintrag nach id).
+  - accentColor überschreibt Akzentfarbe (Header/Footer/Buttons/Back-to-top).
+  - headerBild setzt das Hero-Hintergrundbild über /storage/groupEventHeader/<datei>.
+  - Basis-URL kommt aus der .env-Variable VEREIN_URL.
+  - Hinweis: Unterstriche in VEREIN_URL werden zu Leerzeichen umgewandelt; Unterstriche vermeiden.
 - Sprecherkarten-CSV (Sprecherkarten-Export):
   - Spalte **"Teilnahmen"**: Anzahl vergangener Teilnahmen (wie im Mannschaftssteckbrief).
   - Spalte **"Erfolge"**: letzte Final-Ergebnisse aus früheren Veranstaltungen (aktuelle Regatta wird nicht berücksichtigt), mehrzeilig formatiert als: Platz X – Rennenbezeichnung – dd.mm.YYYY.

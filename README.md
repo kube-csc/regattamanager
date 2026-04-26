@@ -65,6 +65,37 @@ benötigt.
 * Begriff wird in der .env eingetragen  
   ** Anfahrt kann in der .env aktiviert bzw. deaktiviert werden
 
+<h3>Dynamisches Branding (Header/Hero) pro Domain</h3>
+<p>
+Das Frontend kann je nach aufgerufener Domain automatisch Akzentfarbe und Hero-Hintergrundbild setzen.
+Die Logik befindet sich in der Datei resources/views/layouts/header.blade.php.
+</p>
+<p>
+Ablauf:
+</p>
+<ul>
+  <li>
+    Ermittlung der aktuellen Domain über die Laravel-URL (Host) und Entfernen von „www.“.
+  </li>
+  <li>
+    Auswahl der passenden Event-Gruppe aus der Tabelle event_groups:
+    <ul>
+      <li>domain = aktuelle Domain (ohne „www.“)</li>
+      <li>visible = 1</li>
+      <li>es wird der neueste Eintrag verwendet (nach id absteigend)</li>
+    </ul>
+  </li>
+  <li>
+    <b>Akzentfarbe</b> (Feld accentColor, optional):
+    Wenn gesetzt (nicht leer), werden Header/Footer-Akzente, Buttons und „Back-to-top“ per Inline-CSS überschrieben.
+  </li>
+  <li>
+    <b>Hero-Bild</b> (Feld headerBild, optional):
+    Wenn gesetzt, wird das Hero-Hintergrundbild per CSS auf /storage/groupEventHeader/&lt;dateiname&gt; gesetzt.
+    Die vollständige URL wird mit VEREIN_URL als Basis aufgebaut (siehe unten).
+  </li>
+</ul>
+
 <h2>API</h2>
 <ul>
   <li><b>Sprecherkarten (CSV)</b>
@@ -128,7 +159,17 @@ benötigt.
 <h2>Installation</h2>
 <ul>
    <li>git clone https://github.com/kube-csc/regattamangaer.git</li>
-   <li>.env Datei ausfüllen (Es werden auch Informationen über den Verein abgefragt.)</li>
+   <li>.env Datei ausfüllen (Es werden auch Informationen über den Verein abgefragt.)
+     <ul>
+       <li>
+         <b>VEREIN_URL</b>: Basis-URL (öffentlich) für die Generierung von Header-Bild-URLs im Frontend.
+         Verwendet wird (vereinfacht): VEREIN_URL + /storage/groupEventHeader/ + Dateiname aus headerBild.
+         <br>
+         Hinweis: Beim Erstellen der URL werden Unterstriche im VEREIN_URL-Wert in Leerzeichen umgewandelt.
+         Unterstriche im Wert würden dadurch zu Leerzeichen und die URL wäre i.d.R. ungültig. Empfehlung: VEREIN_URL ohne Unterstriche pflegen.
+       </li>
+     </ul>
+   </li>
    <li>cd vereinsverwaltung</li>
    <li>curl -sS https://getcomposer.org/installer</li>
    <li>php composer.phar</li>
@@ -136,6 +177,7 @@ benötigt.
    <li>Die Unterordner unter "/storage/app/public/" sollten angelegt sein, wenn nicht von hand anlegen
        <ul>
          <li>boardPortrait</li>
+          <li>groupEventHeader (öffentlich: /storage/groupEventHeader)</li>
        </ul>
    </li>
    <li>In Ordner "/recources/views/textimport ist folgendes zu Bearbeiten:

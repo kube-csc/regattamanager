@@ -173,6 +173,7 @@
                     <p>Jetzt anmelden und Teil des {{ $event->ueberschrift }} werden – das ultimative Erlebnis wartet!</p>
                     <p>Es haben {{ $teamRaceCount  }} Teams gemeldet.</p>
                     <a class="cta-btn" href="/Meldung">Melden</a>
+                    <a class="cta-btn" href="/Regattateams">Gemeldete teams</a>
                 </div>
 
             </div>

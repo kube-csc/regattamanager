@@ -60,7 +60,7 @@
                             </div>
                         @endif
                     </div>
-                    <div class="card-body bg-light overflow-auto">
+                    <div class="card-body bg-light">
                         <div class="row h-100">
                             <!-- Team Bild -->
                             <div class="col-md-5 text-center mb-4">
@@ -126,10 +126,12 @@
                                             </div>
                                         @endif
 
-                                        @if($team->ort)
+                                        @if($team->ort || $team->plz)
                                             <div class="d-flex align-items-baseline team-detail-row">
                                                 <div class="font-weight-bold text-right team-detail-label">Ort:</div>
-                                                <div class="text-primary ml-2 team-detail-value">{{ $team->ort }}</div>
+                                                <div class="text-primary ml-2 team-detail-value">
+                                                    {{ trim(($team->plz ?? '') . ' ' . ($team->ort ?? '')) ?: '-' }}
+                                                </div>
                                             </div>
                                         @endif
 
@@ -157,7 +159,9 @@
                                 @endphp
                                 @if($lastResults->count() > 0)
                                     <div class="mt-auto">
-                                        <h4 class="border-bottom pb-2">Letzte Erfolge</h4>
+                                        <h4 class="border-bottom pb-2">
+                                            {{ $finaleOnly ? 'Letzte Erfolge' : 'Teilnahmen mit Ergebnissen' }}
+                                        </h4>
                                         <div class="table-responsive aos-erfolge-anchor">
                                             <table class="table table-striped table-bordered bg-white shadow-sm">
                                                 <thead class="table-dark">
@@ -181,7 +185,7 @@
                                                                     data-aos-duration="500"
                                                                     data-aos-once="true"
                                                                 >
-                                                                    Platz {{ $res->platz ?? '-' }}
+                                                                    Platz {{ $res->display_platz ?? $res->platz ?? '-' }}
                                                                 </div>
                                                             </td>
                                                             <td>

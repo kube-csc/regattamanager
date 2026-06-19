@@ -75,7 +75,12 @@ class RegattaTeamHistoryService
             })
             ->filter(fn (Lane $lane) => $lane->race && $lane->race->event_id)
             ->groupBy(fn (Lane $lane) => (int) $lane->race->event_id)
-            ->map(fn (Collection $lanesPerEvent) => $lanesPerEvent->first())
+            ->map(function (Collection $lanesPerEvent) {
+                $lane = $lanesPerEvent->first();
+                $lane->display_platz = $this->resolveDisplayPlace($lane, $lanesPerEvent);
+
+                return $lane;
+            })
             ->values();
     }
 
@@ -104,12 +109,17 @@ class RegattaTeamHistoryService
             ->map(function (Collection $lanesPerTeamlink) {
                 $perEvent = $lanesPerTeamlink
                     ->groupBy(fn (Lane $lane) => (int) $lane->race->event_id)
-                    ->map(fn (Collection $lanesPerEvent) => $lanesPerEvent->first())
+                    ->map(function (Collection $lanesPerEvent) {
+                        $lane = $lanesPerEvent->first();
+                        $lane->display_platz = $this->resolveDisplayPlace($lane, $lanesPerEvent);
+
+                        return $lane;
+                    })
                     ->values();
 
                 return $perEvent
                     ->map(function (Lane $res) {
-                        $platz = $res->platz ?? '-';
+                        $platz = $res->display_platz ?? $res->platz ?? '-';
                         $rennen = $res->race->rennBezeichnung ?? 'Rennen';
                         $datum = $res->race->rennDatum ? Carbon::parse($res->race->rennDatum)->format('d.m.Y') : '-';
                         return "Platz {$platz} – {$rennen} – {$datum}";
@@ -119,14 +129,101 @@ class RegattaTeamHistoryService
     }
 
     /**
+     * Ermittelt den anzuzeigenden Platz.
+     * Wenn der gespeicherte Platz 0 ist, wird innerhalb des gleichen Rennens
+     * anhand von Wertungsart und Ergebnisdaten neu gerankt.
+     */
+    private function resolveDisplayPlace(Lane $lane, Collection $lanesInSameEvent): int
+    {
+        $storedPlace = (int) ($lane->platz ?? 0);
+        if ($storedPlace > 0) {
+            return $storedPlace;
+        }
+
+        $raceId = (int) ($lane->race?->id ?? $lane->rennen_id ?? 0);
+        if ($raceId <= 0) {
+            return 0;
+        }
+
+        $tableId = (int) ($lane->tabele_id ?? $lane->race?->tabele_id ?? 0);
+        if ($tableId <= 0) {
+            return 0;
+        }
+
+        $sameRaceLanes = $lanesInSameEvent
+            ->filter(fn (Lane $candidate) =>
+                (int) ($candidate->race?->id ?? $candidate->rennen_id ?? 0) === $raceId
+                && (int) ($candidate->tabele_id ?? $candidate->race?->tabele_id ?? 0) === $tableId
+            )
+            ->values();
+
+        if ($sameRaceLanes->isEmpty()) {
+            return 0;
+        }
+
+        $valuationType = (int) ($lane->race?->raceTabele?->wertungsart ?? 0);
+
+        $rankedLanes = $sameRaceLanes
+            ->sort(function (Lane $a, Lane $b) use ($valuationType, $tableId) {
+                return $this->compareLanesForDisplayPlace($a, $b, $valuationType, $tableId);
+            })
+            ->values();
+
+        $index = $rankedLanes->search(fn (Lane $candidate) => (int) $candidate->id === (int) $lane->id);
+
+        return $index === false ? 0 : $index + 1;
+    }
+
+    /**
+     * Vergleichslogik für die Platzermittlung.
+     * Punktwertungen: mehr Punkte zuerst.
+     * Zeit-/Laufwertungen: schnellere Zeit, dann Hundertstelsekunden.
+     */
+    private function compareLanesForDisplayPlace(Lane $a, Lane $b, int $valuationType, int $tableId): int
+    {
+        $tableA = (int) ($a->tabele_id ?? $a->race?->tabele_id ?? 0);
+        $tableB = (int) ($b->tabele_id ?? $b->race?->tabele_id ?? 0);
+
+        if ($tableA !== $tableId || $tableB !== $tableId) {
+            return $tableA <=> $tableB;
+        }
+
+        if ($valuationType === 1) {
+            $pointsA = (int) ($a->punkte ?? 0);
+            $pointsB = (int) ($b->punkte ?? 0);
+
+            if ($pointsA !== $pointsB) {
+                return $pointsB <=> $pointsA;
+            }
+        }
+
+        $timeA = (string) ($a->zeit ?? '');
+        $timeB = (string) ($b->zeit ?? '');
+
+        if ($timeA !== $timeB) {
+            return $timeA <=> $timeB;
+        }
+
+        $hundredA = (int) ($a->hundert ?? 0);
+        $hundredB = (int) ($b->hundert ?? 0);
+
+        if ($hundredA !== $hundredB) {
+            return $hundredA <=> $hundredB;
+        }
+
+        return (int) $a->id <=> (int) $b->id;
+    }
+
+    /**
      * Lädt alle relevanten Lanes inkl. Race für die Ergebnislogik.
      */
     private function loadRelevantLanes(Collection $teamIds, int $excludeEventId, bool $finaleOnly): Collection
     {
         return Lane::query()
             ->whereIn('mannschaft_id', $teamIds)
+            ->where('platz', '!=', 99999)
             ->whereHas('race', function ($q) use ($excludeEventId, $finaleOnly) {
-                $q->where('status', 4)
+                $q->where('status', '>', 3)
                     ->where('visible', 1)
                     ->where('event_id', '!=', (int) $excludeEventId);
 

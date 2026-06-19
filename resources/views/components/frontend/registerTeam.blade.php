@@ -164,12 +164,12 @@
                 <option value="4" {{ $werbungOld === '4' ? 'selected' : '' }}>Plakatwerbung</option>
                 <option value="5" {{ $werbungOld === '5' ? 'selected' : '' }}>Flyer</option>
                 <option value="6" {{ $werbungOld === '6' ? 'selected' : '' }}>Empfehlung von Sportfreunden</option>
-                {{-- <option value="7" disabled>Radio</option> --}}
+                <option value="7" {{ $werbungOld === '6' ? 'selected' : '' }}>Radio</option>
                 <option value="8" {{ $werbungOld === '8' ? 'selected' : '' }}>Drachenboot-Liga</option>
                 <option value="9" {{ $werbungOld === '9' ? 'selected' : '' }}>Einladungsmail</option>
                 <option value="10" {{ $werbungOld === '10' ? 'selected' : '' }}>Presse</option>
                 <option value="12" {{ $werbungOld === '12' ? 'selected' : '' }}>dragonboat.online</option>
-                <option value="13" {{ $werbungOld === '13' ? 'selected' : '' }}>lokalkompass.de</option>
+                {{-- <option value="13" disabled>lokalkompass.de</option> --}}
                 <option value="11" {{ $werbungOld === '11' ? 'selected' : '' }}>Sonstiges</option>
             </select>
         </div>

@@ -143,10 +143,10 @@ Ablauf:
             <b>Erfolge</b>: letzte Final-Ergebnisse, mehrzeilig formatiert als:<br>
             Platz X – Rennenbezeichnung – dd.mm.YYYY
             <ul>
-              <li>es werden nur Finale berücksichtigt</li>
-              <li>es werden nur veröffentlichte/abgeschlossene Ergebnisse berücksichtigt</li>
-              <li>die <b>aktuelle Regatta</b> wird dabei nicht berücksichtigt</li>
-              <li>pro früherer Veranstaltung wird das jeweils letzte Ergebnis ausgegeben (wie im Steckbrief)</li>
+              <li>Es werden nur Finale berücksichtigt</li>
+              <li>Es werden nur veröffentlichte/abgeschlossene Ergebnisse berücksichtigt</li>
+              <li>Die <b>aktuelle Regatta</b> wird dabei nicht berücksichtigt</li>
+              <li>Pro früherer Veranstaltung wird das jeweils letzte Ergebnis ausgegeben (wie im Steckbrief)</li>
             </ul>
           </li>
         </ul>
@@ -203,7 +203,7 @@ Ablauf:
 <p>
 Die Verwaltung der Userdaten der Trainer und Abteilungen muss die APP Vereinsverwaltung installiert werden.
 Alternativ müssen die Daten in der Datenbank direkt eingetragen werden.
-<a href="https://github.com/kube-csc/vereinsverwaltung" target="_blank">zum GitHub Projekt Vereinsverwaltung ab V00.10.01</a>
+<a href="https://github.com/kube-csc/vereinsverwaltung" target="_blank">zum GitHub Projekt Vereinsverwaltung ab V00.10.05</a>
 </p>
 
 <h4>Demodaten</h4>
@@ -222,7 +222,7 @@ Alternativ müssen die Daten in der Datenbank direkt eingetragen werden.
 <p>
     Für die live Präsentation der Regatta kann folgende Software verwendet werden.<br>
     Die Version V00.14.XX <a href="https://github.com/kube-csc/regattaView.git" target="_blank">https://github.com/kube-csc/regattaView.git</a> 
-    ist kompatibel mit der Version V00.10.XX <a href="https://github.com/kube-csc/vereinsverwaltung.git" target="_blank">https://github.com/kube-csc/vereinsverwaltung.git</a>.
+    ist kompatibel mit der Version V00.10.05 <a href="https://github.com/kube-csc/vereinsverwaltung.git" target="_blank">https://github.com/kube-csc/vereinsverwaltung.git</a>.
 </p>
 <h3>Helferlisten</h3>
 <p>
@@ -243,7 +243,7 @@ Trainer bzw. Fahrtenleiter: Trainer bzw. Fahrtenleiter können Termine für die 
 Sportgeräte und Räume: Zu den Kursen können Sportgeräte, Räume usw. zugeordnet werden.<br>
 Buchung: Teilnehmer können Kurse buchen und ihre eigenen Buchungen bearbeiten.<br>
 Teilnehmerverwaltung: Hinzufügen und Entfernen von Teilnehmern durch Trainer bzw. Fahrtenleiter.<br>
-Die Version  V00.02.01 <a href="https://github.com/kube-csc/kurse.git" target="_blank">https://github.com/kube-csc/kurse.git</a> ist kompatibel mit der Version ab V00.10.03
+Die Version  V00.02.01 <a href="https://github.com/kube-csc/kurse.git" target="_blank">https://github.com/kube-csc/kurse.git</a> ist kompatibel mit der Version ab V00.10.04
 <a href="https://github.com/kube-csc/vereinsverwaltung" target="_blank"></a>.
 </p>
 <hr>

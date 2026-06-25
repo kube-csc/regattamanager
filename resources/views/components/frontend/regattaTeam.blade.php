@@ -46,10 +46,27 @@
                 @endphp
                 <div class="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0">
                     <div class="icon-box" data-aos="fade-in" data-aos-delay="{{ $delay }}">
-                        @if($regattaTeam->status == 'Warteliste')
-                            <p class="text-danger font-weight-bold">aktuell auf der Warteliste</p>
+                        @php
+                            $statusText = trim((string) ($regattaTeam->status ?? ''));
+                            $statusClass = match($statusText) {
+                                'Neuanmeldung' => 'badge-success',
+                                'Warteliste' => 'badge-warning',
+                                'Abgemeldet' => 'badge-secondary',
+                                'Nicht angetreten' => 'badge-dark',
+                                'Disqualifiziert' => 'badge-danger',
+                                'Ausgeschieden' => 'badge-info',
+                                'Gelöscht' => 'badge-light',
+                                default => 'badge-primary',
+                            };
+                        @endphp
+                        @if($statusText !== '' && $statusText !== 'Neuanmeldung')
+                            <p class="mb-2">
+                                <span class="badge {{ $statusClass }}">
+                                    Status: {{ $statusText }}
+                                </span>
+                            </p>
                         @endif
-                        <h4 class="title"><a href="{{ route('RegattaTeam.steckbrief', ['id' => $regattaTeam->id]) }}">{{ $regattaTeam->teamname }} <i class="bx bx-show"></i></a></h4>
+                        <h4 class="title"><a href="{{ route('RegattaTeam.steckbrief', ['id' => $regattaTeam->id]) }}">{{ $regattaTeam->teamname }}</i></a></h4>
 
                         <ul class="description">
                             <li>Verein / Firma / Institution:<br>

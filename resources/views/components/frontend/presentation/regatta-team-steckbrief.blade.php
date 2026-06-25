@@ -112,6 +112,7 @@
                                     @php
                                         $rennklasse = trim((string) ($team->getRaceType?->typ ?? '-'));
                                         $bootsklasse = trim((string) ($team->getRaceType?->template?->typ ?? '-'));
+                                        $status = trim((string) ($team->status ?? ''));
                                     @endphp
                                     <div class="fs-4">
                                         <div class="d-flex align-items-baseline team-detail-row">
@@ -123,6 +124,13 @@
                                             <div class="d-flex align-items-baseline team-detail-row">
                                                 <div class="font-weight-bold text-right team-detail-label">Bootsklasse:</div>
                                                 <div class="text-primary ml-2 team-detail-value">{{ $bootsklasse }}</div>
+                                            </div>
+                                        @endif
+
+                                        @if($status !== '' && $status !== 'Neuanmeldung')
+                                            <div class="d-flex align-items-baseline team-detail-row">
+                                                <div class="font-weight-bold text-right team-detail-label">Status:</div>
+                                                <div class="text-primary ml-2 team-detail-value">{{ $status }}</div>
                                             </div>
                                         @endif
 

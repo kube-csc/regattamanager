@@ -27,7 +27,7 @@ use Str;
 /**
  * Feld 'status' - Status der Team-Meldung.
  * Mögliche Werte:
- * - Neumeldung: Aktiv gemeldetes Team
+ * - Neuanmeldung: Aktiv gemeldetes Team
  * - Warteliste: Team steht auf der Warteliste
  * - Nicht angetreten: Team ist nicht angetreten
  * - Disqualifiziert: Team wurde disqualifiziert

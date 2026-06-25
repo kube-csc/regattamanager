@@ -49,7 +49,7 @@
                         @if($regattaTeam->status == 'Warteliste')
                             <p class="text-danger font-weight-bold">aktuell auf der Warteliste</p>
                         @endif
-                        <h4 class="title"><a href="{{ route('RegattaTeam.steckbrief', ['id' => $regattaTeam->id]) }}">{{ $regattaTeam->teamname }}</a></h4>
+                        <h4 class="title"><a href="{{ route('RegattaTeam.steckbrief', ['id' => $regattaTeam->id]) }}">{{ $regattaTeam->teamname }} <i class="bx bx-show"></i></a></h4>
 
                         <ul class="description">
                             <li>Verein / Firma / Institution:<br>
@@ -74,6 +74,12 @@
                                     <img src="{{ asset('storage/teamImage/' . $regattaTeam->bild) }}" alt="{{ $regattaTeam->teamname }}" class="img-fluid">
                                 </a>
                             @endif
+                        </div>
+
+                        <div class="text-center">
+                            <a href="{{ route('RegattaTeam.steckbrief', ['id' => $regattaTeam->id]) }}" class="about-btn">
+                                Zum Steckbrief <i class="bx bx-card"></i>
+                            </a>
                         </div>
                     </div>
                 </div>

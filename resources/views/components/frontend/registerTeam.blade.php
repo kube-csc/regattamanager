@@ -22,11 +22,11 @@
             Alle weiteren Meldungen werden auf die Warteliste gesetzt.
         </div>
     @endif
-    @if($event->teilnehmer < $regattaTeamCount && $event->teilnehmermax == '2')
+    @if($event->teilnehmer < $regattaTeamCount && in_array((string) $event->teilnehmermax, ['2', '4'], true))
         <div class="alert alert-warning">
             Wir müssen dir leider mitteilen, dass unser aktuelles Event bereits vollständig ausgebucht ist.
             Du kannst dich jedoch gerne auf unsere Warteliste setzen lassen. Sobald ein Platz frei wird, informieren wir dich umgehend.
-            Vielen Dank für dein Verständnis und deine Geduld. Wir freuen uns sehr über dein Interesse und hoffen, dich bei einer unserer kommenden Regatten begrüßen zu dürfen!
+            Vielen Dank für dein Verständnis. Wir freuen uns sehr über dein Interesse.
         </div>
     @endif
     <form action="{{ route('RegattaTeam.store') }}" method="POST" enctype="multipart/form-data">
@@ -102,8 +102,9 @@
                <option value="0">Wertung / Klasse wählen</option>
                @foreach($raceTypes as $raceType)
                    @php
-                       $status = $raceTypeStatus[$raceType->id] ?? ['isWaitingList' => false, 'statusText' => '', 'isDisabled' => false];
-                       $displayText = $raceType->typ . $status['statusText'];
+                       $status = $raceTypeStatus[$raceType->id] ?? ['isWaitingList' => false, 'statusText' => '', 'isDisabled' => false, 'freePlaces' => null];
+                       $freePlacesText = $status['freePlaces'] !== null ? ' (Freie Plätze: ' . $status['freePlaces'] . ')' : '';
+                       $displayText = $raceType->typ . $freePlacesText . $status['statusText'];
                        $isDisabled = $status['isDisabled'];
                    @endphp
                    @if(!$isDisabled)
@@ -238,4 +239,3 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-

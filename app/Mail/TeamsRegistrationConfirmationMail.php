@@ -58,6 +58,8 @@ use Illuminate\Queue\SerializesModels;
                 } else {
                     $mailtext .= '<br><br><b>Hinweis:</b> Das Team wurde aufgrund der aktuellen Kapazität auf die Warteliste gesetzt.';
                 }
+            } elseif ($modus === 4) {
+                $mailtext .= '<br><br><b>Hinweis:</b> Das Team wurde auf die Warteliste gesetzt, da das Event-Limit oder das Klassenlimit dieser Wertung erreicht ist.';
             } else {
                 $mailtext .= '<br><br><b>Hinweis:</b> Das Team wurde aufgrund der aktuellen Kapazität auf die Warteliste gesetzt.';
             }

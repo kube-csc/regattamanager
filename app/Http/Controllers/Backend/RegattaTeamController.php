@@ -19,6 +19,7 @@ use Str;
  * 1 = maximale Teilnehmerzahl keine Meldung möglich keine Warteliste;
  * 2 = maximale Teilnehmerzahl mit Warteliste;
  * 3 = maximale Teilnehmerzahl mit Warteliste aber Bahnauffühlung. Es können immer die Rennen aufgefüllt wird. Also ein vielfachen $race_types->bahnen.
+ * 4 = maximale Teilnehmerzahl mit Warteliste und zusätzlichem Klassenlimit pro Wertung/Klasse (race_types->max_wertungsteilnehmer).
  *
  */
 
@@ -69,6 +70,7 @@ class RegattaTeamController extends Controller
      * - Modus 1: Ausgebuchte Klassen werden ausgeblendet (nicht auswählbar)
      * - Modus 2: Volle Klassen zeigen "(Meldung nur auf Warteliste)"
      * - Modus 3: Bahnauffüllung - volle Blöcke zeigen "(Meldung nur auf Warteliste)"
+     * - Modus 4: Event- oder Klassenlimit erreicht, Meldung nur auf Warteliste
      */
     public function create()
     {
@@ -123,6 +125,35 @@ class RegattaTeamController extends Controller
             $isWaitingList = false;
             $statusText = '';
             $isDisabled = false; // Für Modus 1: Option wird ausgeblendet
+            $activeCountGroup = (int) ($activeCountsPerGroup[$raceType->id] ?? 0);
+
+            $eventFreePlaces = null;
+            if ($teilnehmerLimit > 0) {
+                $eventFreePlaces = max(0, $teilnehmerLimit - $activeCountEvent);
+            }
+
+            $maxWertungsteilnehmer = (int) ($raceType->max_wertungsteilnehmer ?? 0);
+            $groupFreePlaces = null;
+            if ($maxWertungsteilnehmer > 0) {
+                $groupFreePlaces = max(0, $maxWertungsteilnehmer - $activeCountGroup);
+            }
+
+            // Freie Plätze abhängig vom Modus:
+            // 0: unbegrenzt -> keine Zahl
+            // 1/2/3: nur Event-Limit (falls gesetzt)
+            // 4: Event- und Klassenlimit (falls gesetzt), jeweils restriktiver Wert
+            $freePlaces = null;
+            if (in_array($modus, [1, 2, 3], true)) {
+                $freePlaces = $eventFreePlaces;
+            } elseif ($modus === 4) {
+                if ($eventFreePlaces !== null && $groupFreePlaces !== null) {
+                    $freePlaces = min($eventFreePlaces, $groupFreePlaces);
+                } elseif ($eventFreePlaces !== null) {
+                    $freePlaces = $eventFreePlaces;
+                } elseif ($groupFreePlaces !== null) {
+                    $freePlaces = $groupFreePlaces;
+                }
+            }
 
             // Modus 0: unbegrenzt - nie Warteliste
             if ($modus === 0) {
@@ -156,8 +187,6 @@ class RegattaTeamController extends Controller
                         $isWaitingList = true;
                         $statusText = ' (Meldung nur auf Warteliste)';
                     } else {
-                        $activeCountGroup = (int) ($activeCountsPerGroup[$raceType->id] ?? 0);
-
                         // Warteliste genau dann, wenn aktueller Block voll ist (Vielfaches von bahnen)
                         // Beispiel bahnen=4: active=4,8,12... => Warteliste
                         if ($activeCountGroup > 0 && ($activeCountGroup % $bahnen) === 0) {
@@ -167,11 +196,22 @@ class RegattaTeamController extends Controller
                     }
                 }
             }
+            // Modus 4: Warteliste sobald Event-Limit ODER Klassenlimit erreicht ist
+            elseif ($modus === 4) {
+                $isEventLimitReached = ($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit);
+                $isGroupLimitReached = ($maxWertungsteilnehmer > 0 && $activeCountGroup >= $maxWertungsteilnehmer);
+
+                if ($isEventLimitReached || $isGroupLimitReached) {
+                    $isWaitingList = true;
+                    $statusText = ' (Meldung nur auf Warteliste)';
+                }
+            }
 
             $raceTypeStatus[$raceType->id] = [
                 'isWaitingList' => $isWaitingList,
                 'statusText' => $statusText,
                 'isDisabled' => $isDisabled,
+                'freePlaces' => $freePlaces,
             ];
         }
 
@@ -196,6 +236,9 @@ class RegattaTeamController extends Controller
             } else {
                 $allWaitlist = false;
             }
+        } elseif ($modus === 4) {
+            // In Modus 4 gilt "alle Warteliste", wenn das Event-Limit erreicht ist.
+            $allWaitlist = ($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit);
         }
 
         $num1 = rand(1, 10);
@@ -294,6 +337,14 @@ class RegattaTeamController extends Controller
                         }
                     }
                 }
+            }
+        } elseif ($modus === 4) {
+            $maxWertungsteilnehmer = (int) ($raceType->max_wertungsteilnehmer ?? 0);
+            $isEventLimitReached = ($teilnehmerLimit > 0 && $activeCountEvent >= $teilnehmerLimit);
+            $isGroupLimitReached = ($maxWertungsteilnehmer > 0 && $activeCountGroup >= $maxWertungsteilnehmer);
+
+            if ($isEventLimitReached || $isGroupLimitReached) {
+                $status = 'Warteliste';
             }
         }
 

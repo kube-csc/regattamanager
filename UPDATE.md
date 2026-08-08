@@ -1,4 +1,4 @@
-## Update Anleitung
+    42qq         ## Update Anleitung
 **Version V00.02.01**
 
 Es wird https://github.com/kube-csc/vereinsverwaltung  GitHub Projekt Vereinsverwaltung ab V00.10.05 benötigt
@@ -35,4 +35,11 @@ Es wird https://github.com/kube-csc/vereinsverwaltung  GitHub Projekt Vereinsver
 Es wird https://github.com/kube-csc/vereinsverwaltung  GitHub Projekt Vereinsverwaltung ab V00.10.01 benötigt
 
 ***Neue Funktionen***
-FAQ Bereich wurde hinzugefügt
+**FAQ-Bereich**
+- Häufig gestellte Fragen (FAQ) wurden als eigene Seite im Frontend integriert (`/faq`).
+- Die Inhalte werden über die Vereinsverwaltung gepflegt und sind pro EventGroup konfigurierbar.
+- FAQs können in Kategorien eingeteilt, sortiert und aktiviert/deaktiviert werden.
+- Es können globale FAQs (für alle Events der Gruppe) und event-spezifische FAQs angelegt werden.
+
+***Wichtige Hinweise (Migration)***
+- Nach dem Update bitte die Datenbank-Migration ausführen.

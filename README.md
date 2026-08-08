@@ -50,9 +50,18 @@ benötigt.
         </ul>
     </li>
     <li>Ausschreibung</li>
-    <li>Meldung der Teams ()Warteliste (Teams können bei voller Teilnehmerzahl auf „Warteliste“ gesetzt werden)</li>
+    <li>Meldung der Teams
+      <ul>
+        <li>Warteliste: Teams können bei voller Teilnehmerzahl auf „Warteliste" gesetzt werden (4 Wartelisten-Modi konfigurierbar)</li>
+        <li>Meldezeitraum: Meldung kann über ein konfigurierbares Öffnungs- und Schlussdatum gesteuert werden</li>
+        <li>Teamfoto: Teams können bei der Meldung ein Teamfoto hochladen</li>
+        <li>Math-Captcha: Einfacher Schutz gegen automatisierte Meldungen</li>
+        <li>Bestätigungsseite nach erfolgreicher Meldung (inkl. Wartelisten-Hinweis)</li>
+      </ul>
+    </li>
     <li>Gemeldete Teams</li>
     <li>Mannschaftssteckbrief / Team-Profil (Detailansicht gemeldeter Teams inkl. Blätter-Navigation)</li>
+    <li>FAQ-Bereich (Häufig gestellte Fragen)</li>
     <li>Anfahrt **</li>
     <li>Footer
       <ul> 
@@ -98,6 +107,22 @@ Ablauf:
 
 <h2>API</h2>
 <ul>
+  <li><b>Gemeldete Teams (CSV)</b>
+    <ul>
+      <li><b>URL</b>: /API/Gemeldeteteams</li>
+      <li><b>Response</b>: CSV-Download (Dateiname: mannschaftengemeldet.csv)</li>
+      <li><b>CSV-Spalten</b>: Nr., Teamname, Verein, Wertung (Rennklasse)</li>
+    </ul>
+  </li>
+  <li><b>Meldedaten – gesicherter Export (CSV)</b>
+    <ul>
+      <li><b>URL</b>: /API/Teamdaten/{code}</li>
+      <li><b>Aktivierung</b>: Muss in der .env aktiviert werden: <code>API_TEAMDATEN=ja</code></li>
+      <li><b>Sicherheitscode</b>: Der Zugangscode wird am Event in der Vereinsverwaltung hinterlegt. Optional kann ein Ablaufdatum gesetzt werden.</li>
+      <li><b>Response</b>: CSV-Download (Dateiname: Meldedaten.csv)</li>
+      <li><b>CSV-Spalten</b>: Nr., Teamname, Verein, Straße, PLZ, Ort, Telefon, E-Mail, Training, Renn-Typ</li>
+    </ul>
+  </li>
   <li><b>Sprecherkarten (CSV)</b>
     <ul>
       <li><b>URL</b>: /API/Sprecherkarten</li>
@@ -201,21 +226,10 @@ Ablauf:
 <h3>Vereinsverwaltung</h3>
 <h4>Installation</h4>
 <p>
-Die Verwaltung der Userdaten der Trainer und Abteilungen muss die APP Vereinsverwaltung installiert werden.
+Die Verwaltung der Daten muss die APP Vereinsverwaltung installiert werden.
 Alternativ müssen die Daten in der Datenbank direkt eingetragen werden.
 <a href="https://github.com/kube-csc/vereinsverwaltung" target="_blank">zum GitHub Projekt Vereinsverwaltung ab V00.10.05</a>
 </p>
-
-<h4>Demodaten</h4>
-<p>
-  Email: info@info.de<br>
-  Password: password
-</p>
-<h4>Veraltete Daten:</h4>
-<ul>
-    <li>Userdaten der Trainer</li>
-    <li>Abteilungen</li>
-</ul>
 
 <h2>Zugehörige Projekte</h2>
 <h3>Präsentation der Regatta</h3>

@@ -10,6 +10,15 @@ use Illuminate\View\View;
 
 class TrainingPlanningController extends Controller
 {
+    private function hasBookedReference($query): void
+    {
+        $query->where(function ($bookedQuery) {
+            $bookedQuery->whereNotNull('course_participant_bookeds.regattaTeam_id')
+                ->orWhereNotNull('course_participant_bookeds.participant_id')
+                ->orWhereNotNull('course_participant_bookeds.trainer_id');
+        });
+    }
+
     public function index(): View
     {
         $currentDomain = str_replace('www.', '', parse_url(url('/'), PHP_URL_HOST));
@@ -53,37 +62,94 @@ class TrainingPlanningController extends Controller
 
         $organiserIds = array_values(array_unique(array_filter($organiserIds)));
 
-        $query = CourseDate::with(['course:id,kursName,deleted_at', 'trainers'])
+        $baseQuery = CourseDate::query()
             ->whereNull('deleted_at')
             ->whereHas('course', function ($courseQuery) {
                 $courseQuery->whereNull('deleted_at');
             })
             ->where('kursNichtDurchfuerbar', false)
-            ->whereDate('kursstarttermin', '<', $event->datumvon)
-            ->whereNotExists(function ($subQuery) {
-                $subQuery->select(DB::raw(1))
-                    ->from('course_participant_bookeds')
-                    ->whereColumn('course_participant_bookeds.kurs_id', 'coursedates.id')
-                    ->where(function ($bookedQuery) {
-                        $bookedQuery->whereNotNull('course_participant_bookeds.regattaTeam_id')
-                            ->orWhereNotNull('course_participant_bookeds.participant_id')
-                            ->orWhereNotNull('course_participant_bookeds.trainer_id');
-                    });
-            })
-            ->orderBy('kursstarttermin');
+            ->whereDate('kursstarttermin', '<', $event->datumvon);
 
         if ($previousEvent && $previousEvent->datumvon) {
-            $query->whereDate('kursstarttermin', '>', $previousEvent->datumvon);
+            $baseQuery->whereDate('kursstarttermin', '>', $previousEvent->datumvon);
         }
 
         if (!empty($organiserIds)) {
-            $query->whereIn('organiser_id', $organiserIds);
+            $baseQuery->whereIn('organiser_id', $organiserIds);
         } else {
-            $query->whereRaw('1 = 0');
+            $baseQuery->whereRaw('1 = 0');
         }
 
-        $courseDates = $query->get();
+        $courseDates = (clone $baseQuery)
+            ->with(['course:id,kursName,deleted_at', 'trainers'])
+            ->whereNotExists(function ($subQuery) {
+                $subQuery->select(DB::raw(1))
+                    ->from('course_participant_bookeds')
+                    ->whereNull('course_participant_bookeds.deleted_at')
+                    ->whereColumn('course_participant_bookeds.kurs_id', 'coursedates.id');
+                $this->hasBookedReference($subQuery);
+            })
+            ->orderBy('kursstarttermin')
+            ->get();
 
-        return view('pages.frontend.trainingPlanning', compact('event', 'courseDates'));
+        $bookedCourseDates = (clone $baseQuery)
+            ->with(['course:id,kursName,deleted_at', 'trainers'])
+            ->whereExists(function ($subQuery) {
+                $subQuery->select(DB::raw(1))
+                    ->from('course_participant_bookeds')
+                    ->whereNull('course_participant_bookeds.deleted_at')
+                    ->whereColumn('course_participant_bookeds.kurs_id', 'coursedates.id');
+                $this->hasBookedReference($subQuery);
+            })
+            ->orderBy('kursstarttermin')
+            ->get();
+
+        $bookedByRows = DB::table('course_participant_bookeds')
+            ->leftJoin('regatta_teams', 'regatta_teams.id', '=', 'course_participant_bookeds.regattaTeam_id')
+            ->leftJoin('course_participants', 'course_participants.id', '=', 'course_participant_bookeds.participant_id')
+            ->leftJoin('users as trainer_users', 'trainer_users.id', '=', 'course_participant_bookeds.trainer_id')
+            ->whereNull('course_participant_bookeds.deleted_at')
+            ->whereIn('course_participant_bookeds.kurs_id', $bookedCourseDates->pluck('id')->all())
+            ->select(
+                'course_participant_bookeds.kurs_id',
+                'course_participant_bookeds.regattaTeam_id',
+                'course_participant_bookeds.participant_id',
+                'course_participant_bookeds.trainer_id',
+                'regatta_teams.teamname as team_name',
+                'course_participants.vorname as participant_vorname',
+                'course_participants.nachname as participant_nachname',
+                'trainer_users.vorname as trainer_vorname',
+                'trainer_users.nachname as trainer_nachname',
+                'trainer_users.name as trainer_name'
+            )
+            ->get();
+
+        $bookedByMap = [];
+        foreach ($bookedByRows as $bookedByRow) {
+            $bookedBy = null;
+            if ($bookedByRow->regattaTeam_id && $bookedByRow->team_name) {
+                $bookedBy = 'Team: '.$bookedByRow->team_name;
+            } elseif ($bookedByRow->participant_id) {
+                $participantName = trim(($bookedByRow->participant_vorname ?? '').' '.($bookedByRow->participant_nachname ?? ''));
+                if ($participantName !== '') {
+                    $bookedBy = 'Teilnehmer: '.$participantName;
+                }
+            } elseif ($bookedByRow->trainer_id) {
+                $trainerName = trim(($bookedByRow->trainer_vorname ?? '').' '.($bookedByRow->trainer_nachname ?? ''));
+                $bookedBy = $trainerName !== '' ? 'Trainer: '.$trainerName : 'Trainer: '.($bookedByRow->trainer_name ?? '-');
+            }
+
+            if ($bookedBy) {
+                $bookedByMap[$bookedByRow->kurs_id][] = $bookedBy;
+            }
+        }
+
+        $bookedCourseDates->transform(function ($courseDate) use ($bookedByMap) {
+            $bookedByEntries = $bookedByMap[$courseDate->id] ?? [];
+            $courseDate->bookedBy = implode(', ', array_values(array_unique($bookedByEntries)));
+            return $courseDate;
+        });
+
+        return view('pages.frontend.trainingPlanning', compact('event', 'courseDates', 'bookedCourseDates'));
     }
 }

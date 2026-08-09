@@ -7,6 +7,7 @@ use App\Http\Controllers\Frontend\ImpressumController;
 use App\Http\Controllers\Frontend\DatenschutzerklaerungController;
 use App\Http\Controllers\Frontend\FaqController;
 use App\Http\Controllers\Frontend\PresentationController;
+use App\Http\Controllers\Backend\TrainingPlanningController;
 use App\Http\Controllers\Api\APIController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,8 @@ Route::get('/Meldung/Bestaetigung/{raceTeam_id}', [RegattaTeamController::class,
     ->middleware('check.meldung.session');
 
 Route::get('/Regattateam/Steckbrief/{id?}',  [PresentationController::class, 'teamProfile'])->name('RegattaTeam.steckbrief');
+Route::get('/Trainingsplanung', [TrainingPlanningController::class, 'index'])
+    ->name('training.planning.index');
 
 Route::middleware([
     'auth:sanctum',

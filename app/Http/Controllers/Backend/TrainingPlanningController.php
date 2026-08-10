@@ -62,6 +62,8 @@ class TrainingPlanningController extends Controller
 
         $organiserIds = array_values(array_unique(array_filter($organiserIds)));
 
+        $now = now();
+
         $baseQuery = CourseDate::query()
             ->whereNull('deleted_at')
             ->whereHas('course', function ($courseQuery) {
@@ -80,7 +82,10 @@ class TrainingPlanningController extends Controller
             $baseQuery->whereRaw('1 = 0');
         }
 
-        $courseDates = (clone $baseQuery)
+        $futureBaseQuery = (clone $baseQuery)->where('kursstarttermin', '>', $now);
+        $pastCourseDatesCount = (clone $baseQuery)->where('kursstarttermin', '<=', $now)->count();
+
+        $courseDates = (clone $futureBaseQuery)
             ->with(['course:id,kursName,deleted_at', 'trainers'])
             ->whereNotExists(function ($subQuery) {
                 $subQuery->select(DB::raw(1))
@@ -92,7 +97,7 @@ class TrainingPlanningController extends Controller
             ->orderBy('kursstarttermin')
             ->get();
 
-        $bookedCourseDates = (clone $baseQuery)
+        $bookedCourseDates = (clone $futureBaseQuery)
             ->with(['course:id,kursName,deleted_at', 'trainers'])
             ->whereExists(function ($subQuery) {
                 $subQuery->select(DB::raw(1))
@@ -150,6 +155,6 @@ class TrainingPlanningController extends Controller
             return $courseDate;
         });
 
-        return view('pages.frontend.trainingPlanning', compact('event', 'courseDates', 'bookedCourseDates'));
+        return view('pages.frontend.trainingPlanning', compact('event', 'courseDates', 'bookedCourseDates', 'pastCourseDatesCount'));
     }
 }

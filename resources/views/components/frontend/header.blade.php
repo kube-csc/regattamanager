@@ -23,10 +23,6 @@
                         <li><a href="{{ route('pages.frontend.faq') }}">FAQ</a></li>
                     @endif
 
-                <li><a href="{{ route('training.planning.index') }}">
-                    Trainingsplanung
-                </a></li>
-
                     @if($event->datumvona &&
                         $event->datumbisa &&
                         now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&
@@ -35,6 +31,7 @@
                     @endif
                     @if($event->email)
                        <li><a href="/Regattateams">Gemeldete Teams</a></li>
+                       <li><a href="{{ route('training.planning.index') }}">Trainingsplanung</a></li>
                     @endif
                 @endif
                 <li><a href="/Anfahrt">Anfahrt</a></li>

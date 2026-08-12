@@ -13,7 +13,7 @@
         <nav class="nav-menu d-none d-lg-block">
             <ul>
                 <li class="active"><a href="/">Home</a></li>
-                <li><a href="/#about">Informationen</a></li>
+                <li><a href="/#about">Info</a></li>
                 @if($event)
                     @if($event->anmeldetext && $event->beschreibung)
                        <li><a href="/Ausschreibung">Ausschreibung</a></li>
@@ -30,8 +30,8 @@
                        <li><a href="/Meldung">Melden</a></li>
                     @endif
                     @if($event->email)
-                       <li><a href="/Regattateams">Gemeldete Teams</a></li>
-                       <li><a href="{{ route('training.planning.index') }}">Trainingsplanung</a></li>
+                       <li><a href="/Regattateams">Teams</a></li>
+                       <li><a href="{{ route('training.planning.index') }}">Training</a></li>
                     @endif
                 @endif
                 <li><a href="/Anfahrt">Anfahrt</a></li>

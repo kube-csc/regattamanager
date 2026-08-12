@@ -91,7 +91,7 @@
                                     <strong>End Datum:</strong><br>
                                     bis {{ $endDay }} {{ $courseEnd->format('d.m.Y') }}<br>
                                 @endif
-                                <strong>Dauer:</strong><br>{{ $durationLabel }}<br>
+                                <strong>Dauer:</strong><br>{{ $durationLabel }}  Stunde(n)<br>
                                 <strong>Trainer:</strong><br>{{ $trainerNames !== '' ? $trainerNames : '-' }}
                                 @if($bookingUrl)
                                     <br>
@@ -161,7 +161,7 @@
                                     <strong>End Datum:</strong><br>
                                     bis {{ $endDay }} {{ $courseEnd->format('d.m.Y') }}
                                 @endif
-                                <strong>Dauer:</strong><br>{{ $durationLabel }}<br>
+                                <strong>Dauer:</strong><br>{{ $durationLabel }} Stunde(n)<br>
                                 <strong>Trainer:</strong><br>{{ $bookedTrainerNames !== '' ? $bookedTrainerNames : '-' }}<br>
                                 <strong>Gebucht von:</strong><br>{{ $courseDate->bookedBy ?: '-' }}
                             </div>

@@ -19,16 +19,18 @@
                     @endif
 
                     @if($event->email)
-                       @if($event->anmeldetext)
-                          <a href="/Ausschreibung" class="about-btn">Ausschreibung<i class="bx bx-chevron-right"></i></a>
-                       @endif
-                       @if($event->datumvona &&
-                            $event->datumbisa &&
-                            now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&
-                            now()->toDateString() <= \Carbon\Carbon::parse($event->datumbisa)->toDateString())
-                       <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
-                       @endif
+                           @if($event->anmeldetext)
+                              <a href="/Ausschreibung" class="about-btn">Ausschreibung<i class="bx bx-chevron-right"></i></a>
+                              <a href="{{ route('training.planning.index') }}" class="about-btn">Training<i class="bx bx-chevron-right"></i></a>
+                             @if($event->datumvona &&
+                                    $event->datumbisa &&
+                                    now()->toDateString() >= \Carbon\Carbon::parse($event->datumvona)->toDateString() &&
+                                    now()->toDateString() <= \Carbon\Carbon::parse($event->datumbisa)->toDateString())
+                           <a href="/Meldung" class="about-btn">Melden<i class="bx bx-chevron-right"></i></a>
+                              @endif
+                           @endif
                     @endif
+
                 </div>
             </div>
             <div class="col-xl-7 d-flex align-items-stretch">
@@ -193,4 +195,3 @@
         </section><!-- End Cta Section -->
     @endif
 @endif
-

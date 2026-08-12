@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\CourseDate;
 use App\Models\RaceType;
 use App\Models\RegattaInformation;
 use App\Models\RegattaTeam;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -19,6 +21,7 @@ class HomeController extends Controller
         $teamRaceCount = RegattaTeam::where('regatta_id', $event->id)
             ->where('status', '!=', 'Gelöscht')
             ->count();
+        $hasTrainingPlanning = $this->hasTrainingPlanning($event);
 
         if ($event->id != null) {
             $raceTypes = RaceType::where('regatta_id', $event->id)->get();
@@ -58,7 +61,55 @@ class HomeController extends Controller
         }
 
         return view('pages.frontend.home',
-            compact('event', 'raceTypes', 'eventDokumentes', 'regattaInformations', 'teamRaceCount'));
+            compact('event', 'raceTypes', 'eventDokumentes', 'regattaInformations', 'teamRaceCount', 'hasTrainingPlanning'));
+    }
+
+    private function hasTrainingPlanning($event): bool
+    {
+        if (!$event || !$event->id || !$event->eventGroup_id || !$event->datumvon) {
+            return false;
+        }
+
+        $currentDomain = str_replace('www.', '', parse_url(url('/'), PHP_URL_HOST));
+
+        $organiserIds = DB::table('organiser_sport_section')
+            ->where('sport_section_id', $event->sportSection_id)
+            ->pluck('organiser_id')
+            ->all();
+
+        $organiserId = DB::table('organisers')
+            ->where('veranstaltungDomain', $currentDomain)
+            ->value('id');
+
+        if ($organiserId) {
+            $organiserIds[] = (int) $organiserId;
+        }
+
+        $organiserIds = array_values(array_unique(array_filter($organiserIds)));
+
+        if (empty($organiserIds)) {
+            return false;
+        }
+
+        $previousEvent = Event::where('eventGroup_id', $event->eventGroup_id)
+            ->whereDate('datumvon', '<', $event->datumvon)
+            ->orderBy('datumvon', 'desc')
+            ->first();
+
+        $query = CourseDate::query()
+            ->whereNull('deleted_at')
+            ->whereHas('course', function ($courseQuery) {
+                $courseQuery->whereNull('deleted_at');
+            })
+            ->where('kursNichtDurchfuerbar', false)
+            ->whereDate('kursstarttermin', '>', $event->datumvon)
+            ->whereIn('organiser_id', $organiserIds);
+
+        if ($previousEvent && $previousEvent->datumvon) {
+            $query->whereDate('kursstarttermin', '>', $previousEvent->datumvon);
+        }
+
+        return $query->exists();
     }
 
     public function imprint()

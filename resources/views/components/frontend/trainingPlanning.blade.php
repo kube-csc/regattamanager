@@ -11,16 +11,20 @@
             </div>
             <div class="col-lg-4 col-md-6 d-md-flex align-items-md-stretch">
                 <div class="count-box">
-                    <i class="icofont-calendar"></i>
-                    <span data-toggle="counter-up">{{ $courseDates->count() }}</span>
-                    <p><strong>Freie Kurstermine</strong></p>
+                    <a href="#freie-kurstermine" class="text-reset text-decoration-none">
+                        <i class="icofont-calendar"></i>
+                        <span data-toggle="counter-up">{{ $courseDates->count() }}</span>
+                        <p><strong>Freie Kurstermine</strong></p>
+                    </a>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 d-md-flex align-items-md-stretch">
                 <div class="count-box">
-                    <i class="icofont-check-circled"></i>
-                    <span data-toggle="counter-up">{{ $bookedCourseDates->count() }}</span>
-                    <p><strong>Gebuchte Kurstermine</strong></p>
+                    <a href="#gebuchte-kurstermine" class="text-reset text-decoration-none">
+                        <i class="icofont-check-circled"></i>
+                        <span data-toggle="counter-up">{{ $bookedCourseDates->count() }}</span>
+                        <p><strong>Gebuchte Kurstermine</strong></p>
+                    </a>
                 </div>
             </div>
         </div>
@@ -30,7 +34,7 @@
 <!-- ======= Services Section ======= -->
 <section id="services" class="services">
     <div class="container">
-        <div class="section-title" data-aos="fade-in" data-aos-delay="50">
+        <div id="freie-kurstermine" class="section-title" data-aos="fade-in" data-aos-delay="50">
             <h2>Trainingsplanung</h2>
             <p>Freie Kurstermine</p>
         </div>
@@ -104,7 +108,7 @@
             </div>
         @endif
 
-        <div class="section-title mt-5" data-aos="fade-in" data-aos-delay="50">
+        <div id="gebuchte-kurstermine" class="section-title mt-5" data-aos="fade-in" data-aos-delay="50">
             <h2>Gebuchte Kurstermine</h2>
             <p>Wer hat gebucht?</p>
         </div>
